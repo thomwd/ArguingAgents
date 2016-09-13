@@ -1,0 +1,28 @@
+﻿Input:
+Complete argument
+Arguments one by one in real time
+Arguments consist of:
+        The argument (small text)
+        The source of the argument
+        Whether it rebuts/undercuts any arguments
+        Whether it supports any other arguments
+        Weight/credibility
+        Which conclusion it supports
+Arguments can be saved in xml-files.
+Agents can maybe have a label that determines their credibility
+Input can also consist of constraints?
+
+
+Parameters:
+Method of evaluation
+        Can use different methods to decide what the outcome of the argument is like:
+        
+        Method of evaluation can differ based on the argument setting
+Using the weights or not
+        Not sure if leaving the weights out will lead to sensible conclusions
+
+
+Output:
+The conclusion of the argument
+        Which conclusion is true (and perhaps to what degree)
+An argumentation scheme
