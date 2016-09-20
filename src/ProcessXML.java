@@ -31,25 +31,35 @@ public class ProcessXML {
 		return subject;
 	}
 	
-	public static String[] getConclusion(Document document) {
-		
-		int i=0;
-		XPath xpathSelector = DocumentHelper.createXPath("//conclusion[@id]");
-	    List results = xpathSelector.selectNodes(document);
-	    for ( Iterator iter = results.iterator(); iter.hasNext(); ) {
+	public static ArrayList<Conclusion> getConclusion(Document document) {
+		ArrayList<Conclusion> conArray= new ArrayList<Conclusion>();   
+		XPath xpathSelectorForCon = DocumentHelper.createXPath("//conclusion[@id]");
+	    List resultsForCon = xpathSelectorForCon.selectNodes(document);
+	    for ( Iterator iter = resultsForCon.iterator(); iter.hasNext(); ) {
 	    	Element element = (Element) iter.next();
-            i++;
-	    }
-	    String[] conclusion = new String[i];
-	    int j = 0;
-	    for ( Iterator iter = results.iterator(); iter.hasNext(); ) {
-	    	Element element = (Element) iter.next();
-	    	conclusion[j] = element.getText();
-            j++;
-	    }
-		return conclusion;
+	    	String type = element.attributeValue("hypothType");
+	    	String conclusion = element.getText();
+	    	Conclusion con = new Conclusion();
+	    	con.addConclusionElement(type, conclusion);
+	    	conArray.add(con);
+	    }	
+	    return conArray;
+//		int i=0;
+//		XPath xpathSelector = DocumentHelper.createXPath("//conclusion[@id]");
+//	    List results = xpathSelector.selectNodes(document);
+//	    for ( Iterator iter = results.iterator(); iter.hasNext(); ) {
+//	    	Element element = (Element) iter.next();
+//            i++;
+//	    }
+//	    String[] conclusion = new String[i];
+//	    int j = 0;
+//	    for ( Iterator iter = results.iterator(); iter.hasNext(); ) {
+//	    	Element element = (Element) iter.next();
+//	    	conclusion[j] = element.getText();
+//            j++;
+//	    }
+//		return conclusion;
 	}
-	
 			
 	public static ArrayList<Argument> getArgument(Document document){
 		ArrayList<Argument> argArray= new ArrayList<Argument>();   

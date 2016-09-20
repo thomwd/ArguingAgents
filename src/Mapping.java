@@ -18,14 +18,22 @@ import javax.swing.JScrollPane;
 public class Mapping extends JFrame {
 
 	private JPanel contentPane;
-	private JTable table;
+	private JTable table_arg;
 	private JScrollPane scrollPane;
+	private JScrollPane scrollPaneCon;
+	int iForTableCon = 0;
+	int iForTableArg = 0;
+
 	ArrayList<Argument> argArray;
 	String subject;
-	String[] conclusion;
+	ArrayList<Conclusion> conArray;
+	private JTable table_con;
 
 	
-	public Mapping(ArrayList<Argument> argArray,String subject,String[] conclusion) {
+	
+	
+	
+	public Mapping(ArrayList<Argument> argArray,String subject,ArrayList<Conclusion> conArray) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1600, 900);
 		contentPane = new JPanel();
@@ -35,16 +43,43 @@ public class Mapping extends JFrame {
 		
 		this.argArray = argArray;
 		this.subject = subject;
-		this.conclusion = conclusion;
-		String[] columns = {"ArgText","ArgId","Origin","Weight","HypothType"};
+		this.conArray = conArray;
+		String[] columns = {"ArgText","ArgId","Origin","Weight","Type"};
 		String[][] data = new String[argArray.size()][];
-		for(int i = 0; i<argArray.size();i++){
-			Argument row = argArray.get(i);
-			data[i] = new String[]{row.getText(),row.getArgId(),row.getOrigin(),row.getTextWt(),row.getHypothType()};
+		String[] columnsTableCon = {"Conclusion","Type"};
+		String[][] dataTableCon = new String[conArray.size()][];
+		for(iForTableArg = 0; iForTableArg<argArray.size();iForTableArg++){
+			Argument row = argArray.get(iForTableArg);
+			data[iForTableArg] = new String[]{row.getText(),row.getArgId(),row.getOrigin(),row.getTextWt(),row.getHypothType()};
 		}
-		table = new JTable(data,columns){
+		
+		for(iForTableCon = 0; iForTableCon<conArray.size();iForTableCon++){
+			Conclusion row = conArray.get(iForTableCon);
+			dataTableCon[iForTableCon] = new String[]{row.getConclusionText(),row.getType()};
+		}
+		
+		table_con = new JTable(dataTableCon,columnsTableCon){
 			public boolean isCellEditable(int data, int columns) {
-				
+				return false;
+			}
+		};
+		table_con.setPreferredScrollableViewportSize(new Dimension(450,63));
+		table_con.setFillsViewportHeight(true);
+		table_con.getColumnModel().getColumn(0).setPreferredWidth(300);
+		table_con.setRowHeight(30);
+		table_con.setFont(new Font("Serif", Font.PLAIN, 15));
+		table_con.getTableHeader().setFont(new Font("Serif",Font.BOLD,20));
+		table_con.getTableHeader().setDefaultRenderer(new HeaderRenderer(table_con));
+		scrollPaneCon = new JScrollPane();
+		scrollPaneCon.setBounds(20, 100, 700, table_con.getRowHeight()*(iForTableCon + 1));
+		contentPane.add(scrollPaneCon);
+		scrollPaneCon.setViewportView(table_con);
+		
+		
+		
+		
+		table_arg = new JTable(data,columns){
+			public boolean isCellEditable(int data, int columns) {
 				return false;
 			}
 			
@@ -59,22 +94,33 @@ public class Mapping extends JFrame {
 				return component;
 			}
 		};
-		table.setPreferredScrollableViewportSize(new Dimension(450,63));
-		table.setFillsViewportHeight(true);
-		table.getColumnModel().getColumn(0).setPreferredWidth(300);
-		table.setRowHeight(30);
-		table.setFont(new Font("Serif", Font.PLAIN, 15));
-		table.getTableHeader().getPreferredSize().height = 40;
-		table.getTableHeader().setFont(new Font("Serif",Font.BOLD,20));
-		table.getTableHeader().setDefaultRenderer(new HeaderRenderer(table));
+		table_arg.setPreferredScrollableViewportSize(new Dimension(450,63));
+		table_arg.setFillsViewportHeight(true);
+		table_arg.getColumnModel().getColumn(0).setPreferredWidth(300);
+		table_arg.setRowHeight(30);
+		table_arg.setFont(new Font("Serif", Font.PLAIN, 15));
+		table_arg.getTableHeader().setFont(new Font("Serif",Font.BOLD,20));
+		table_arg.getTableHeader().setDefaultRenderer(new HeaderRenderer(table_arg));
 		
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(20, 100, 1000, 500);
+		scrollPane.setBounds(20, 300, 1000, table_arg.getRowHeight()*(iForTableArg + 1));
 		contentPane.add(scrollPane);
-		scrollPane.setViewportView(table);
+		scrollPane.setViewportView(table_arg);
 		
 		
+		
+		
+		JLabel lblNewLabel = new JLabel("Subject:");
+		lblNewLabel.setFont(new Font("Serif", Font.PLAIN, 22));
+		lblNewLabel.setBounds(20, 23, 82, 61);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel(subject);
+		lblNewLabel_1.setFont(new Font("Serif", Font.PLAIN, 22));
+		lblNewLabel_1.setBounds(116, 23, 640, 61);
+		contentPane.add(lblNewLabel_1);
+			
 		
 	}
 

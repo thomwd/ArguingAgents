@@ -85,11 +85,12 @@ public class Import extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				ArrayList<Argument> argArray= new ArrayList<Argument>();
+				ArrayList<Conclusion> conArray= new ArrayList<Conclusion>();
 				argArray = ProcessXML.getArgument(document);
 				String subject = ProcessXML.getSubject(document);
-				String[] conclusion = ProcessXML.getConclusion(document);
+				conArray = ProcessXML.getConclusion(document);
 				
-				Mapping map = new Mapping(argArray,subject,conclusion);
+				Mapping map = new Mapping(argArray,subject,conArray);
 				Import.this.dispose();
 				map.setVisible(true);
 
