@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding ="UTF-8"?>
+<argumentation>
+	<head>
+		<subject>Michael went to Amsterdam on Satarday.</subject>
+		<conclusion id = "0" hypothType = "for">Michael went to Amsterdam on Satarday.</conclusion>
+		<conclusion id = "1" hypothType = "against">Michael didn't go to Amsterdam on Satarday.</conclusion>
+	</head>
+	<body>
+		<argument argId="1">
+			<origin>
+				Thomas
+			</origin>
+			<text weight = "0.1">
+				I don't think Michael go.
+			</text>
+			<attribution>
+				<hypothType>against</hypothType>
+				<relatedArg>null</relatedArg>
+			</attribution>
+		</argument>
+		<argument argId="2">
+			<origin>
+				Yannik
+			</origin>
+			<text weight = "0.2" >
+				Michael told me he would go to Amsterdam on Friday.
+			</text>
+			<attribution>
+				<hypothType>for</hypothType>
+				<relatedArg id = "1" argForm = "rebuttal">
+					<argId>1</argId>
+				</relatedArg>
+			</attribution>
+		</argument>
+		<argument argId="3">
+			<origin>
+				Thomas
+			</origin>
+			<text weight = "0.5">
+				I saw Michael was at home at 12:00.
+			</text>
+			<attribution>
+				<hypothType>against</hypothType>
+				<relatedArg id = "1" argForm = "undercutting">
+					<argId>2</argId>
+				</relatedArg>
+				<relatedArg id = "2" argForm = "supporting">
+					<argId>1</argId>
+				</relatedArg>
+			</attribution>
+		</argument>
+		<argument argId="4">
+			<origin>
+				Yannik
+			</origin>
+			<text weight = "0.4">
+				He could go there in the afternoon and be back at midnight.
+			</text>
+			<attribution>
+				<hypothType>for</hypothType>
+				<relatedArg id = "1" argForm = "rebuttal">
+					<argId>3</argId>
+				</relatedArg>
+				<relatedArg id = "2" argForm = "supporting">
+					<argId>2</argId>
+				</relatedArg>
+			</attribution>
+		</argument>
+		
+	</body>
+</argumentation>
