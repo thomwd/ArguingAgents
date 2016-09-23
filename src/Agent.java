@@ -1,13 +1,13 @@
 
-public class Source {
-	private  int sourceId;
+public class Agent {
+	private  int agentId;
 	private  String name;
 	private  ArrayList arguments;
 	private double credibility;
 
-	public  void addSource(int sourceId,String name, String[] arguments){
-		setName(name)
-    this.sourceId = sourceId;
+	public  void addSource(int agentId,String name, String[] arguments){
+		setName(name);
+    this.agentId = agentId;
 		this.credibility = 1.0;
 	}
 
@@ -25,7 +25,7 @@ public class Source {
 
 	public void setCredibility(double credibility){
 		if(credibility>1||credibility<0){
-			print("Credibility has to be between 0 and 1")
+			System.out.println("Credibility has to be between 0 and 1");
 		}else{
 			this.credibility = credibility;
 		}
