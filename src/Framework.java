@@ -5,11 +5,11 @@ public class Framework {
 	private  String textWt;
 
 
-	public  void addFramework(String frameworkId,String text,String textWt){
+	public  void addFramework(int frameworkId,String text,String textWt){
 		this.frameworkId = frameworkId;
 	}
 
-	public String getframeworkId() {
+	public int getframeworkId() {
 		return frameworkId;
 	}
 
