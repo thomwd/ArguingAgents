@@ -1,15 +1,18 @@
 
 public class Argument {
-	private  String argId; //Wouldn't this be better as an int?
-	private  String origin;
+	private  String argId;		// change to int
+	private  String origin;		// TODO: rename to 'agent' (source would also be fine)
 	private  String text;
-	private  String textWt;
-	private  String hypothType;
+	private  String textWt;		//TODO rename to 'summary'
+	private  String hypothType; //TODO can be removed (we don't assign arguments to positions, arguments can favor one or more positions in the end)
 	//private  int issueId;
-	private  boolean activity;
-	private  double credibility;
+	private  boolean activity;	//TODO change to double
+	private  double credibility; //TODO delete this
+	
+	//TODO replace these three with a single collection (ArrayList) of relation objects, called 'relations'
+	// private ArrayList<relation> relations = new ArrayList<>();
 	private  int[] undercutArgId;
-	private  int[] supportArgId;
+	private  int[] supportArgId; 
 	private  int[] rebuttalArgId;
 
 
