@@ -1,19 +1,15 @@
-
+/**
+ * Represents a complete argumentation framework
+ */
 public class Framework {
-	private  int frameworkId;
-	private  String text;
-	private  String textWt;
-
-
-	public  void addFramework(int frameworkId,String text,String textWt){
-		this.frameworkId = frameworkId;
-	}
-
-	public int getframeworkId() {
-		return frameworkId;
-	}
-
-
-
-
+	private  String topicDescription;		// what the argumentation is about 
+	private  String topicSummary;			// short summary of description
+	private ArrayList<Argument> positions	// competing (final) positions in the argumentation, e.g. 'is guilty'
+	private ArrayList<Argument> arguments;	// all arguments
+	private ArrayList<Relation> relations;	// all relations between arguments and other arguments
+											// and between arguments and relations
+										
+	// TODO
+	// methods:
+	// solve
 }
