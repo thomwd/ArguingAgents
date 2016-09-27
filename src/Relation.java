@@ -7,15 +7,15 @@ public class Relation {
   private double weight; //The weight of this relation. TODO: think of sensible values
 
 	public  void addRelation(int relationId, int origin, int targetArgument, int targetRelation, double weight){
-    this.relationId = relationId;
+		this.relationId = relationId;
 		this.origin = origin;
     this.targetArgument = targetArgument;
     this.targetRelation = targetRelation;
 		if(weight != null){
-			setWeight (weight)
+			setWeight (weight);
 		}else{
 			// TODO: think of a sensible standard value
-			setWeight (0.0)
+			setWeight (0.0);
 		}
 		// TODO: add error messages when origin or relation are null
 	}
@@ -23,17 +23,17 @@ public class Relation {
   //Based on which one of the getTarget functions returns a non-null value it is possible to discern if the target is a relation or an argument
 	public int getTargetArgument() {
 		if(targetArgument != null){
-      return targetArgument
+      return targetArgument;
     }else{
-      return null
+      return null;
     }
 	}
 
   public int getTargetRelation() {
 		if(targetRelation != null){
-      return targetRelation
+      return targetRelation;
     }else{
-      return null
+      return null;
     }
 	}
 
