@@ -15,8 +15,7 @@ public class Argument {
 	}
 	
 	
-	
-	
+		
 	public int getArgId() {
 		return argId;
 	}

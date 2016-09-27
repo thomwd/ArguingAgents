@@ -18,8 +18,7 @@ public class ProcessXML {
         Document document = reader.read(url);
         return document;
     }
-	
-	
+		
 	
 	public static String getSubject(Document document){
 		String subject;

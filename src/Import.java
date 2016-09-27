@@ -29,7 +29,6 @@ public class Import extends JFrame {
 	private JFileChooser chooser; 
 	Document document = null;
 
-
 	
 	/**
 	 * Launch the application.
