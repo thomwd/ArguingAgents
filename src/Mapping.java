@@ -27,13 +27,14 @@ public class Mapping extends JFrame {
 	ArrayList<Argument> argArray;
 	String subject;
 	ArrayList<Conclusion> conArray;
+	ArrayList<Relation> relArray;
 	private JTable table_con;
 
 	
 	
 	
 	
-	public Mapping(ArrayList<Argument> argArray,String subject,ArrayList<Conclusion> conArray) {
+	public Mapping(ArrayList<Argument> argArray,ArrayList<Relation> relArray) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1600, 900);
 		contentPane = new JPanel();
@@ -42,8 +43,7 @@ public class Mapping extends JFrame {
 		contentPane.setLayout(null);
 		
 		this.argArray = argArray;
-		this.subject = subject;
-		this.conArray = conArray;
+		this.relArray = relArray;
 		String[] columns = {"ArgText","ArgId","Origin","Weight","Type"};
 		String[][] data = new String[argArray.size()][];
 		String[] columnsTableCon = {"Conclusion","Type"};

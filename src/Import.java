@@ -21,6 +21,10 @@ import java.awt.event.ActionEvent;
 
 public class Import extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JFileChooser chooser; 
 	Document document = null;
@@ -85,12 +89,10 @@ public class Import extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				ArrayList<Argument> argArray= new ArrayList<Argument>();
-				ArrayList<Conclusion> conArray= new ArrayList<Conclusion>();
+				ArrayList<Relation> relArray= new ArrayList<Relation>();
 				argArray = ProcessXML.getArgument(document);
-				String subject = ProcessXML.getSubject(document);
-				conArray = ProcessXML.getConclusion(document);
-				
-				Mapping map = new Mapping(argArray,subject,conArray);
+				relArray = ProcessXML.getRelation(document);
+				Mapping map = new Mapping(argArray,relArray);
 				Import.this.dispose();
 				map.setVisible(true);
 
