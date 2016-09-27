@@ -20,6 +20,7 @@ public class ProcessXML {
     }
 	
 	
+	
 	public static String getSubject(Document document){
 		String subject;
 		Element root = document.getRootElement();

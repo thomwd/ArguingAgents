@@ -13,6 +13,7 @@ public class Relation {
 	private  double weight = 0; //The weight of this relation. TODO: think of sensible values
 
 	
+	
 	public Relation(int relationId, int originId, int targetArgId, int frontArgId, int endArgId, double weight) {
 		this.relationId = relationId;
 		this.originId = originId;

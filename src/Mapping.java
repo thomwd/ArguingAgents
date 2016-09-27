@@ -34,6 +34,7 @@ public class Mapping extends JFrame {
 	
 	
 	
+	
 	public Mapping(ArrayList<Argument> argArray,ArrayList<Relation> relArray) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1600, 900);
