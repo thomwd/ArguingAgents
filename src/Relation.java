@@ -22,7 +22,7 @@ public class Relation {
 			//error
 		}
 		this.targetArgId = targetArgId;
-		this.targetRelId = targetRelId
+		this.targetRelId = targetRelId;
 		this.frontArgId = frontArgId;
 		this.endArgId = endArgId;
 		if(weight != null){
