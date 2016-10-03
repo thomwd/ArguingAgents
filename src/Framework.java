@@ -25,32 +25,41 @@ public class Framework {
 		//remove current leaf nodes as possible leaf nodes (how?)
 		//find new "leaf" nodes and repeat previous step (call evaluate again)
 
-	public ArrayList<Argument> evaluate (String mode, double threshold, Arraylist<Argument> argumentList, ArrayList<Relation> relationlist){
+	public ArrayList<Argument> evaluate (String mode, double threshold, Arraylist<Argument> argumentList, ArrayList<Relation> relationlist, ArrayList<Argument> solution){
 		ArrayList<Argument> tempArg = argumentList;
 		ArrayList<Relation> tempRel = relationList;
-		ArrayList<Argument> solution = new Arraylist<Argument>();
-		tempArg = argumentList;
-		tempRel = relationList;
+		boolean solved = true;
 		for(int i = 0; i < tempArg.size(); i++){
 			Argument argument = tempArg.get(i);
 			if(isLeaf(argument,tempRel)==true){
+				//TODO: change this to different solve functions based on the mode
+					//first check if there is a target and set solved. Then solve for rel or arg.
+				//TODO: work with a threshold
 				for(int j = 0; j < tempRel.size(); j++){
 					if(tempRel.get(j).originId == argument.argId){
 						Relation relation = tempRel.get(j);
 						if(relation.getTargetArgId!=null){
+							solved = false;
+							//double activity = solveArgument(mode, tempArg, relation);
+							//tempArg.get(id).activity = activity;
+							//solution.get(id).activity = activity;
+							//If we want to do something with threshold it can be done here.
 							int id = relation.getTargetArgId;
-							tempArg.get(id).activity = tempArg.get(id).activity + (argument.acivity * relation.weight)
-							//solution[target.argId].activity = solution[target.argId].activity + (argument.acivity * relation.weight)
+							tempArg.get(id).activity = tempArg.get(id).activity + (argument.acivity * relation.weight);
+							solution.get(id).activity = solution.get(id).activity + (argument.acivity * relation.weight);
 						}
 						else if(relation.getTargetRelId!=null){
+							solved = false;
+							//double activity = solveRelation();
 							//tempRel[relation.getTargetRelId]
 							//if (tempRel[relation.getTargetRelId].weight < 0)
 								//tempRel[relation.getTargetRelId].weight = tempRel[relation.getTargetRelId].weight - (argument.acivity * relation.weight)
 							//else
 								//tempRel[relation.getTargetRelId].weight = tempRel[relation.getTargetRelId].weight + (argument.acivity * relation.weight)
-							}
+						}
 						else{
 							//current argument is position, mark it as such
+							//might not be necessary to mark them, can also check for positions in post. Just calculate their activity.
 						}
 						tempRel.remove(j);
 					}
@@ -58,9 +67,8 @@ public class Framework {
 				tempArg.remove(i);
 			}
 		}
-		//update the lists accordingly
-		if(solution is nog niet de positions){
-			solution = solve (mode, threshold, argumentList, relationList)
+		if(solved == false){
+			solution = solve (mode, threshold, tempArg, tempRel, solution);
 		}else{
 				return solution;
 		}
