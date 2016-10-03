@@ -51,54 +51,51 @@ public class ProcessXML {
 	    List resultsForArgument = xpathSelectorForArgument.selectNodes(document);
 	    for ( Iterator iter = resultsForArgument.iterator(); iter.hasNext(); ) {
 	    	Element element = (Element) iter.next();
-	    	int argId = argIdIndicator;
-	    	int agentId = Integer.parseInt(element.attributeValue("agentId"));
+	    	int argId = Integer.parseInt(element.attributeValue("argId"));
+	    	int agentId = Integer.parseInt(element.element("agentId").getText());
+	    	double activition = Double.parseDouble(element.element("activation").getText());
 	    	String text = element.element("text").getText();
 	    	String summary = element.element("summary").getText();
-	    	Argument argument = new Argument(argId, agentId, text, summary);
+	    	Argument argument = new Argument(argId, agentId, text, summary,activition);
+	    	System.out.println(argId+","+agentId+","+text+","+summary+","+activition);
 	    	argArray.add(argument);    	
-	    	argIdIndicator++;
 	    }
 		return argArray;
 	}		
 	
 	
 	public static ArrayList<Relation> getRelation(Document document){
-		int relationIdIndicator = 1;
-		int argIdIndicator = 1;
 		ArrayList<Relation> relArray = new ArrayList<Relation>();
 	    XPath xpathSelectorForArgument = DocumentHelper.createXPath("//argument[@argId]");
 	    List resultsForArgument = xpathSelectorForArgument.selectNodes(document);
 	    for ( Iterator iter = resultsForArgument.iterator(); iter.hasNext(); ) {    	
-	    	
-	    	XPath xpathSelectorTargetArg = DocumentHelper.createXPath("//argId[@weight]");
+	    	Element element = (Element) iter.next();
+	    	int argId = Integer.parseInt(element.attributeValue("argId"));
+	    	XPath xpathSelectorTargetArg = DocumentHelper.createXPath("//argument[@argId = " +element.attributeValue("argId")+ "]//targetArgId[@weight]");
 		    List resultsTargetArg = xpathSelectorTargetArg.selectNodes(document);
 	    	for(Iterator iterTargetArg = resultsTargetArg.iterator(); iterTargetArg.hasNext(); ){
 	    		Element elementTargetArg = (Element) iterTargetArg.next();
-	    		int relationId = relationIdIndicator;
-	    		int originId = argIdIndicator;
-	    		int targetArgId = Integer.parseInt(elementTargetArg.getText());
+	    		int relId = Integer.parseInt(elementTargetArg.attributeValue("relId"));
+	    		int originId = argId;
+	    		int targetArgId = Integer.parseInt(elementTargetArg.getText().trim());
 	    		double weight = Double.parseDouble(elementTargetArg.attributeValue("weight"));
-	    		Relation relation = new Relation(relationId, originId, targetArgId, 0, 0, weight);
+	    		Relation relation = new Relation(relId, originId, targetArgId, 0, weight);
+	    		System.out.println(relId+","+originId+","+targetArgId+","+weight);
 	    		relArray.add(relation);
-	    		relationIdIndicator++;
 	    	}
 	    	
-	    	XPath xpathSelectorRelArg = DocumentHelper.createXPath("//pair[@id]");
+	    	XPath xpathSelectorRelArg = DocumentHelper.createXPath("//argument[@argId= "+element.attributeValue("argId")+"]//targetRelId[@weight]");
 		    List resultsRelArg = xpathSelectorRelArg.selectNodes(document);
 	    	for(Iterator iterRelArg = resultsRelArg.iterator(); iterRelArg.hasNext(); ){
 	    		Element elementRelArg = (Element) iterRelArg.next();
-	    		int relationId = relationIdIndicator;
-	    		int originId = argIdIndicator;
-	    		int endArgId = Integer.parseInt(elementRelArg.element("endArgId").getText());
-	    		int frontArgId = Integer.parseInt(elementRelArg.element("frontArgId").getText());
+	    		int relId = Integer.parseInt(elementRelArg.attributeValue("relId"));
+	    		int originId = argId;
+	    		int targetRelId = Integer.parseInt(elementRelArg.getText().trim());
 	    		double weight = Double.parseDouble(elementRelArg.attributeValue("weight"));
-	    		Relation relation = new Relation(relationId, originId, 0, frontArgId, endArgId, weight);
+	    		Relation relation = new Relation(relId, originId, 0, targetRelId, weight);
+	    		System.out.println(relId+","+originId+","+targetRelId+","+weight);
 	    		relArray.add(relation);
-	    		relationIdIndicator++;
-	    	}
-	    	
-	    	argIdIndicator++;
+	    	}	    	
 	    }
 		return relArray;
 	}	

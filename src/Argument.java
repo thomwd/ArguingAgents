@@ -4,14 +4,14 @@ public class Argument {
 	private  String text;
 	private  String summary;
 	private  double activity;	
-	//private  ArrayList<Relation> relations;
 	
 	
-	public Argument(int argId, int agentId, String text, String summary) {
+	public Argument(int argId, int agentId, String text, String summary, double activity) {
 		this.argId = argId;
 		this.agentId = agentId;
 		this.text = text;
 		this.summary = summary;
+		this.activity = activity;
 	}
 	
 	
@@ -47,7 +47,5 @@ public class Argument {
 	public void setActivity(double activity) {
 		this.activity = activity;
 	}
-	
-	
-	// TODO: generate constructors/getters&setters
+		
 }
