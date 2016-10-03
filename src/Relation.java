@@ -43,6 +43,10 @@ public class Relation {
     }
 	}
 
+	public int getOriginId() {
+		return originId;
+	}
+
 	public int getFrontArgId(){
 		return frontArgId;
 	}
