@@ -11,36 +11,19 @@ public class Relation {
 	private int targetRelId = 0;
 
 	public void addRelation(int relationId, int originId, int targetArgId, int targetRelId, int frontArgId, int endArgId, double weight) {
-		if(relationId != null){
-				this.relationId = relationId;
-		}else{
-			//error
-		}
-		if(originId != null){
-			this.originId = origin;
-		}else{
-			//error
-		}
+		this.relationId = relationId;
+		this.originId = originId;
 		this.targetArgId = targetArgId;
 		this.targetRelId = targetRelId;
 		this.frontArgId = frontArgId;
 		this.endArgId = endArgId;
-		if(weight != null){
-			setWeight (weight);
-		}else{
-			// TODO: think of a sensible standard value
-			setWeight (0.0);
-		}
+		setWeight (weight);
 		// TODO: add error messages when origin or relation are null
 	}
 
   //Based on which one of the getTarget functions returns a non-null value it is possible to discern if the target is a relation or an argument
 	public int getTargetArgId() {
-		if(targetArgId != null){
-      return targetArgId;
-    }else{
-      return null;
-    }
+    return targetArgId;
 	}
 
 	public int getOriginId() {
@@ -56,11 +39,7 @@ public class Relation {
 	}
 
   public int getTargetRelId() {
-		if(targetRelId != null){
-      return targetRelId;
-    }else{
-      return null;
-    }
+		return targetRelId;
 	}
 
 	public void setWeight(double weight) {
