@@ -18,15 +18,11 @@ public class Relation {
 		}
 		if(originId != 0){
 			this.originId = originId;
-		}else{
-			//error
 		}
 		this.targetArgId = targetArgId;
 		this.targetRelId = targetRelId;
 		if(weight != 0){
-			setWeight (weight);
-		}else{
-			setWeight (0.0);
+			this.weight = weight;
 		}
 	}
 
@@ -39,12 +35,14 @@ public class Relation {
 	}
 
 
+
 	public int getTargetRelId() {
 		if(targetRelId != 0){
 	      return targetRelId;
 	    }else{
 	      return 0;
 	    }
+
 	}
 
 	public void setWeight(double weight) {
