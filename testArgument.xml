@@ -19,34 +19,22 @@
 	<arguments>
 		<argument argId="1">
 			<agentId>1</agentId>
-			<text>
-				Buy a Mac
-			</text>
-			<summary>
-				Buy_mac
-			</summary>
+			<text>Buy a Mac</text>
+			<summary>Buy_mac</summary>
 			<activation>0</activation>
 		</argument>
 		
 		<argument argId="2">
 			<agentId>2</agentId>
-			<text>
-				Buy a Windows
-			</text>
-			<summary>
-				Buy_windows
-			</summary>
+			<text>Buy a Windows</text>
+			<summary>Buy_windows</summary>
 			<activation>0</activation>
 		</argument>
 		
 		<argument argId="3">
 			<agentId>1</agentId>
-			<text>
-				Mac has less viruses
-			</text>
-			<summary>
-				Mac_less_virus
-			</summary>
+			<text>Mac has less viruses</text>
+			<summary>Mac_less_virus</summary>
 			<activation>0.8</activation>
 			<relations>
 				<targetArgs>
@@ -63,12 +51,8 @@
 		
 		<argument argId="4">
 			<agentId>2</agentId>
-			<text>
-				You are an IT expert
-			</text>
-			<summary>
-				You_are_IT_expert
-			</summary>
+			<text>You are an IT expert</text>
+			<summary>You_are_IT_expert</summary>
 			<activation>0.7</activation>
 			<relations>
 				<targetRels>
@@ -81,12 +65,8 @@
 		
 		<argument argId="5">
 			<agentId>1</agentId>
-			<text>
-				You are only used to unix
-			</text>
-			<summary>
-				Only_used_to_Unix
-			</summary>
+			<text>You are only used to unix</text>
+			<summary>Only_used_to_Unix</summary>
 			<activation>1</activation>
 			<relations>
 				<targetRels>
@@ -104,12 +84,8 @@
 		
 		<argument argId="6">
 			<agentId>1</agentId>
-			<text>
-				You did not keep up with technology during the last five years
-			</text>
-			<summary>
-				Behind_lastest_technology
-			</summary>
+			<text>You did not keep up with technology during the last five years</text>
+			<summary>Behind_lastest_technology</summary>
 			<activation>0.5</activation>
 			<relations>
 				<targetArgs>

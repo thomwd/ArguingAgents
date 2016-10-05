@@ -24,16 +24,12 @@ public class Mapping extends JFrame {
 	int iForTableCon = 0;
 	int iForTableArg = 0;
 
-	ArrayList<Argument> argArray;
 	String subject;
+	ArrayList<Argument> argArray;
 	ArrayList<Conclusion> conArray;
 	ArrayList<Relation> relArray;
 	private JTable table_con;
 
-	
-	
-	
-	
 	
 	public Mapping(ArrayList<Argument> argArray,ArrayList<Relation> relArray) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

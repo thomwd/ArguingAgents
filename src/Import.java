@@ -18,6 +18,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
+import javax.swing.JTextField;
 
 public class Import extends JFrame {
 
@@ -28,6 +30,8 @@ public class Import extends JFrame {
 	private JPanel contentPane;
 	private JFileChooser chooser; 
 	Document document = null;
+	private JTextField textField;
+	private File file;
 
 	
 	/**
@@ -58,8 +62,16 @@ public class Import extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
+		
+		textField = new JTextField();
+		textField.setBounds(14, 162, 443, 36);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		
 		JButton btnImportXml = new JButton("Browse");
-		btnImportXml.setBounds(157, 109, 168, 39);
+		btnImportXml.setFont(new Font("Arial", Font.PLAIN, 20));
+		btnImportXml.setBounds(471, 159, 168, 39);
 		btnImportXml.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -71,9 +83,10 @@ public class Import extends JFrame {
 				int value = chooser.showOpenDialog(Import.this);
 				chooser.setMultiSelectionEnabled(true);
 				if(value == JFileChooser.APPROVE_OPTION){
-					File file = chooser.getSelectedFile();
+					file = chooser.getSelectedFile();
 					try {
 						document = ProcessXML.parse(file.getAbsolutePath());
+						textField.setText(file.getAbsolutePath());
 					} catch (DocumentException e) {
 						e.printStackTrace();
 					}
@@ -84,7 +97,11 @@ public class Import extends JFrame {
 		contentPane.setLayout(null);
 		contentPane.add(btnImportXml);
 		
+		
+		
+		
 		JButton btnImport = new JButton("Next");
+		btnImport.setFont(new Font("Arial", Font.PLAIN, 20));
 		btnImport.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -92,19 +109,23 @@ public class Import extends JFrame {
 				ArrayList<Relation> relArray= new ArrayList<Relation>();
 				argArray = ProcessXML.getArgument(document);
 				relArray = ProcessXML.getRelation(document);
-				Mapping map = new Mapping(argArray,relArray);
+				//Mapping map = new Mapping(argArray,relArray);
+				Actions actions = new Actions(argArray,relArray);
 				Import.this.dispose();
-				map.setVisible(true);
+				actions.setVisible(true);
+				//map.setVisible(true);
 
 			}
 		});
-		btnImport.setBounds(157, 212, 168, 39);
+		btnImport.setBounds(471, 250, 168, 39);
 		contentPane.add(btnImport);
 		
-		JLabel lblNewLabel = new JLabel("Import XML");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(14, 114, 117, 29);
+		JLabel lblNewLabel = new JLabel("Import XML:");
+		lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+		lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel.setBounds(14, 113, 162, 36);
 		contentPane.add(lblNewLabel);
+		
 	}
 	
 }
