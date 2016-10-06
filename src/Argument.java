@@ -13,13 +13,13 @@ public class Argument {
 		this.summary = summary;
 		this.activity = activity;
 	}
-	
-	
+
+
 		
 	public int getArgId() {
 		return argId;
 	}
-	
+
 	public void setArgId(int argId) {
 		this.argId = argId;
 	}

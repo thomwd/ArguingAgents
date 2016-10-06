@@ -29,19 +29,19 @@ public class Framework {
 			double activity = target.getActivity() + (origin.getActivity() * relation.getWeight());
 			return activity;
 		}else if(mode == "BRD"){ //Beyond Reasonable Doubt
-			if((origin.getActivity() * relation.getWeight())<=0){ //If the argument attacks the target argument, there is doubt, so set the activity of the target argument to 0
+			if((origin.getActivity() * relation.getWeight()) < 0){ //If the argument attacks the target argument, there is doubt, so set the activity of the target argument to 0
 				return 0;
 			}else{
 				return target.getActivity();
 			}
 		}else if(mode == "SOE"){ //Scintilla of Evidence
-			if((origin.getActivity() * relation.getWeight())>0){ //If the argument supports the target argument, there is a scintilla of evidence, so set the activity of the target argument to 1
+			if((origin.getActivity() * relation.getWeight()) > 0){ //If the argument supports the target argument, there is a scintilla of evidence, so set the activity of the target argument to 1
 				return 1;
 			}else{
 				return target.getActivity();
 			}
 		}else{ //Error because it is not one of the predefined modes
-			System.out.println("Error: mode is not recognized.");
+			System.err.println("Error: mode is not recognized.");
 			return 0;
 		}
 	}
@@ -53,6 +53,9 @@ public class Framework {
 		Relation target = relationList.get(targetId);
 		double weight = 0; //TODO fix this
 		//TODO: how do the modes work with the relations?
+		// (Yannik:) I would skip modes for relations for now, think they are easier to understand for arguments
+
+		// TODO this update is complex, let's discuss this in person
 		if(target.getWeight()<0){
 			weight = target.getWeight() - (origin.getActivity() * relation.getWeight());
 		}else{
@@ -61,10 +64,11 @@ public class Framework {
 		return weight;
 	}
 
-	public ArrayList<Argument> evaluate (String mode, double threshold, ArrayList<Argument> argumentList, ArrayList<Relation> relationList, ArrayList<Argument> solution){
+	public ArrayList<Argument> evaluate(String mode, double threshold, ArrayList<Argument> argumentList,
+										ArrayList<Relation> relationList, ArrayList<Argument> solution){
 		ArrayList<Argument> tempArg = argumentList;
 		ArrayList<Relation> tempRel = relationList;
-		boolean solved = true; //Flag to see if the framework is solved. Set to false if there are still arguments to be analyzed
+		boolean solved = true; // Flag to see if the framework is solved. Set to false if there are still arguments to be analyzed
 		for(int i = 0; i < tempArg.size(); i++){ //Iterate over all arguments
 			Argument argument = tempArg.get(i);
 			if(isLeaf(argument,tempRel)==true){ //Check if the argument is an argument from the current layer
@@ -98,7 +102,7 @@ public class Framework {
 		return solution; //If there were no more arguments to solve, return the current solution
 	}
 
-	//See if there are any relations with this argument as a target
+	// See if there are any relations with this argument as a target
 	public boolean isLeaf(Argument argument, ArrayList<Relation> relations){
 		for (int i = 0; i < relations.size(); i++) {
 			if(relations.get(i).getTargetArgId() == argument.getArgId()){
@@ -107,5 +111,4 @@ public class Framework {
 		}
 		return true; //Otherwise it is a leaf
 	}
-
 }
