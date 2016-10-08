@@ -93,40 +93,11 @@ public class ProcessXML {
 	    		int targetRelId = Integer.parseInt(elementRelArg.getText().trim());
 	    		double weight = Double.parseDouble(elementRelArg.attributeValue("weight"));
 	    		Relation relation = new Relation(relId, originId, 0, targetRelId, weight);
-	    		System.out.println("relId"+relId+",originId:"+originId+",targetRelId:"+targetRelId+",weight:"+weight);
+	    		System.out.println("relId:"+relId+",originId:"+originId+",targetRelId:"+targetRelId+",weight:"+weight);
 	    		relArray.add(relation);
 	    	}	    	
 	    }
 		return relArray;
 	}	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-//	public static ArrayList<Argument> getArgument(Document document){
-//		ArrayList<Argument> argArray= new ArrayList<Argument>();   
-//	    XPath xpathSelectorForArgument = DocumentHelper.createXPath("//argument[@argId]");
-//	    List resultsForArgument = xpathSelectorForArgument.selectNodes(document);
-//	    for ( Iterator iter = resultsForArgument.iterator(); iter.hasNext(); ) {
-//	    	Element element = (Element) iter.next();
-//	    	String argId = element.attributeValue("argId");
-//	    	String origin = element.element("origin").getText();
-//	    	String text = element.element("text").getText();
-//	    	String textWt = element.element("text").attributeValue("weight");
-//	    	String hypothType = element.element("attribution").element("hypothType").getText();
-//	    	Argument argument = new Argument();
-//	    	argument.addArgumentElement(argId, origin, text, textWt, hypothType);
-//	    	argArray.add(argument);
-//	    }	    
-//		String argNumber = String.valueOf(argArray.size());
-//		return argArray;
-//	}
 	
 }

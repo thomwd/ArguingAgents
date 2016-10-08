@@ -15,7 +15,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 
-public class Mapping extends JFrame {
+public class Table extends JFrame {
 
 	private JPanel contentPane;
 	private JTable table_arg;
@@ -31,7 +31,7 @@ public class Mapping extends JFrame {
 	private JTable table_con;
 
 	
-	public Mapping(ArrayList<Argument> argArray,ArrayList<Relation> relArray) {
+	public Table(ArrayList<Argument> argArray,ArrayList<Relation> relArray) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1600, 900);
 		contentPane = new JPanel();
