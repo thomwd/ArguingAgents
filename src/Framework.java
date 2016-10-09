@@ -64,9 +64,17 @@ public class Framework {
 		return weight;
 	}
 
+	/**
+	 * @param argumentList ArrayList<Argument> a copy of the field 'arguments'. (Not just a copy of the reference)
+	 * @param relationList ArrayList<Relations> a copy of the field 'relations'. (Not just a copy of the reference)
+	 * @param solution ArrayList<Argument> a copy of the field 'arguments'. (Not just a copy of the reference)
+	 * @return ArrayList<Argument> a copy of the field 'arguments' for which all activations have been computed.
+	 */
 	public ArrayList<Argument> evaluate(String mode, double threshold, ArrayList<Argument> argumentList,
 										ArrayList<Relation> relationList, ArrayList<Argument> solution){
-		ArrayList<Argument> tempArg = argumentList;
+		ArrayList<Argument> tempArg = argumentList; //TODO: why is this step necessary? I think we can just pass a copy
+													// of the arraylist in the very first function call.
+													// If we do decide to copy inside, this statement only copies the reference of the ArrayList.
 		ArrayList<Relation> tempRel = relationList;
 		boolean solved = true; // Flag to see if the framework is solved. Set to false if there are still arguments to be analyzed
 		for(int i = 0; i < tempArg.size(); i++){ //Iterate over all arguments
