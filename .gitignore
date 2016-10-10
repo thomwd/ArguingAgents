@@ -1,7 +1,0 @@
-/bin/
-*.metadata*
-.classpath
-.project
-.idea
-*.iml
-out/production
