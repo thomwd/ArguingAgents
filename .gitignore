@@ -1,6 +1,5 @@
 /bin/
 *.metadata*
 .classpath
-.project
 .idea
 *.iml
