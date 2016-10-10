@@ -65,49 +65,49 @@ public class Framework {
 	}
 
 	/**
-	 * @param argumentList ArrayList<Argument> a copy of the field 'arguments'. (Not just a copy of the reference)
-	 * @param relationList ArrayList<Relations> a copy of the field 'relations'. (Not just a copy of the reference)
+	 * @param arguments ArrayList<Argument> a copy of the field 'arguments'. (Not just a copy of the reference)
+	 * @param relations ArrayList<Relations> a copy of the field 'relations'. (Not just a copy of the reference)
 	 * @param solution ArrayList<Argument> a copy of the field 'arguments'. (Not just a copy of the reference)
 	 * @return ArrayList<Argument> a copy of the field 'arguments' for which all activations have been computed.
 	 */
-	public ArrayList<Argument> evaluate(String mode, double threshold, ArrayList<Argument> argumentList,
-										ArrayList<Relation> relationList, ArrayList<Argument> solution){
-		ArrayList<Argument> tempArg = argumentList; //TODO: why is this step necessary? I think we can just pass a copy
-													// of the arraylist in the very first function call.
-													// If we do decide to copy inside, this statement only copies the reference of the ArrayList.
-		ArrayList<Relation> tempRel = relationList;
+	public ArrayList<Argument> evaluate(String mode, double threshold, ArrayList<Argument> arguments,
+										ArrayList<Relation> relations, ArrayList<Argument> solution){
 		boolean solved = true; // Flag to see if the framework is solved. Set to false if there are still arguments to be analyzed
-		for(int i = 0; i < tempArg.size(); i++){ //Iterate over all arguments
-			Argument argument = tempArg.get(i);
-			if(isLeaf(argument,tempRel)==true){ //Check if the argument is an argument from the current layer
+		for(int i = 0; i < arguments.size(); i++){ 			//Iterate over all arguments
+			Argument argument = arguments.get(i);
+			if(isLeaf(argument,relations)==true){ 			//Check if the argument is an argument from the current layer
 				//TODO: work with a threshold
-				for(int j = 0; j < tempRel.size(); j++){ //Iterate over all the relations
-					Relation relation = tempRel.get(j);
-					if(relation.getOriginId() == argument.getArgId()){ //Check if the origin of the relation is the current argument
-						if(relation.getTargetArgId()!=0){ //Check if the target of the relation is an argument
-							solved = false; //There are still arguments to analyze
-							double activity = solveArgument(mode, tempArg, relation); //Calculate the new activity for the argument
+				for(int j = 0; j < relations.size(); j++){  //Iterate over all the relations
+					Relation relation = relations.get(j);
+															//Check if the origin of the relation is the current argument
+					if(relation.getOriginId() == argument.getArgId()){
+						if(relation.getTargetArgId()!=0){ 	//Check if the target of the relation is an argument
+							solved = false; 				//There are still arguments to analyze
+															//Calculate the new activity for the argument
+							double activity = solveArgument(mode, arguments, relation);
 							int targetId = relation.getTargetArgId();
-							tempArg.get(targetId).setActivity(activity); //Add it to the argument list
+															//Add it to the argument list
+							arguments.get(targetId).setActivity(activity);
 							solution.get(targetId).setActivity(activity);
 							//If we want to do something with threshold it can be done here.
 						}
 						else if(relation.getTargetRelId()!=0){ //Check if the target of the relation is a relation
-							solved = false; //There are still arguments to analyze
-							double weight = solveRelation(mode, tempRel, tempArg, relation); //Calculate the new weight for the relation
+							solved = false; 				   //There are still arguments to analyze
+							double weight = solveRelation(mode, relations, arguments, relation); //Calculate the new weight for the relation
 							int targetId = relation.getTargetRelId();
-							tempRel.get(targetId).setWeight(weight); //Add it to the weight list
+																//Add it to the weight list
+							relations.get(targetId).setWeight(weight);
 						}
-						tempRel.remove(j); //remove this relation, because it is not necessary for the calculation anymore
+						relations.remove(j); 					//remove this relation, because it is not necessary for the calculation anymore
 					}
 				}
-				tempArg.remove(i); //Remove this argument, because it is not necessary for the calculation anymore
+				arguments.remove(i); 							//Remove this argument, because it is not necessary for the calculation anymore
 			}
 		}
-		if(solved == false){ //If there are still arguments to be calcuted, recursively solve the remaining arguments and relations
-			solution = evaluate (mode, threshold, tempArg, tempRel, solution);
+		if(solved == false){ // If there are still arguments to be calcuted, recursively solve the remaining arguments and relations
+			solution = evaluate (mode, threshold, arguments, relations, solution);
 		}
-		return solution; //If there were no more arguments to solve, return the current solution
+		return solution; 	// If there were no more arguments to solve, return the current solution
 	}
 
 	// See if there are any relations with this argument as a target
