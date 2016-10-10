@@ -18,6 +18,13 @@ public class Framework {
 	// TODO
 	// constructors/getters/setters
 
+	public Framework(String topic, String summary, ArrayList<Argument> argumentList, ArrayList<Relation> relationList) {
+		this.topicDescription = topic;
+		this.topicSummary = summary;
+		this.arguments = argumentList;
+		this.relations = relationList;
+	}
+
 
 	//Function to calculate the activity of arguments, based on their mode
 	public double solveArgument (String mode, ArrayList<Argument> argumentList, Relation relation){
