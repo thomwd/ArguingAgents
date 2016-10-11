@@ -239,6 +239,7 @@ public class Framework {
 		for(int i = 0; i<arguments.size();i++){
 			if (arguments.get(i).getArgId() == argId) {
 				argument = arguments.get(i);
+				break;
 			}
 		}
 		return argument;
@@ -249,6 +250,7 @@ public class Framework {
 		for(int i = 0; i<relations.size();i++){
 			if (relations.get(i).getRelId() == relId) {
 				relation = relations.get(i);
+				break;
 			}
 		}
 		return relation;
