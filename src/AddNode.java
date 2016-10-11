@@ -28,7 +28,4 @@ public class AddNode extends Actions{
 		getM().put(nodeInfo, v1);
 		getGraph().getModel().endUpdate();
 	}
-	
-	
-	
 }

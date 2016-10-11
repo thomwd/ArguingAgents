@@ -54,8 +54,8 @@ public class Actions extends JFrame {
 		for(int i = 0; i<argArray.size();i++){
 			Argument argument = argArray.get(i);
 			String summary = argument.getSummary();
-			String activition = String.valueOf(argument.getActivity());
-			String nodeInfo = summary+"\r\n"+activition;
+			String activation = String.valueOf(argument.getActivity());
+			String nodeInfo = summary+"\r\n"+activation;
 			String argId = String.valueOf(argument.getArgId());
 			AddNode.addNode(nodeInfo,i*50,i*60,argId);
 		}
