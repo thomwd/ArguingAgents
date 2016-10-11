@@ -74,7 +74,7 @@ public class ProcessXML {
 	    		int targetArgId = Integer.parseInt(elementTargetArg.getText().trim());
 	    		double weight = Double.parseDouble(elementTargetArg.attributeValue("weight"));
 	    		Relation relation = new Relation(relId, originId, targetArgId, 0, weight);
-	    		System.out.println("redId:"+relId+",originId:"+originId+",targetArgId:"+targetArgId+",weight:"+weight);
+	    		System.out.println("relId:"+relId+",originId:"+originId+",targetArgId:"+targetArgId+",weight:"+weight);
 	    		relArray.add(relation);
 	    	}
 	    	

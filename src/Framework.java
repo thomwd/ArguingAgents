@@ -88,7 +88,6 @@ public class Framework {
 		int targetRelId = relation.getTargetRelId();
 		int originId = relation.getOriginId();
 		
-		
 		//Michael updates:
 		Argument origin = getArg(originId, argumentList);
 		Relation target = getRel(targetRelId, relationList);
@@ -102,7 +101,7 @@ public class Framework {
 		// (Yannik:) I would skip modes for relations for now, think they are easier to understand for arguments
 
 		// TODO this update is complex, let's discuss this in person
-		System.out.println("redId: "+relation.getRelId()+" targetRel: "+target.getTargetRelId());
+		System.out.println("relId: "+relation.getRelId()+" targetRel: "+relation.getTargetRelId());
 		if(target.getWeight()<0){
 			weight = target.getWeight() - (origin.getActivity() * relation.getWeight());
 		}else{
@@ -125,10 +124,13 @@ public class Framework {
 	public ArrayList<Argument> evaluate(String mode, double threshold, ArrayList<Argument> arguments,
 										ArrayList<Relation> relations, ArrayList<Argument> solution){
 		boolean solved = true; // Flag to see if the framework is solved. Set to false if there are still arguments to be analyzed
+		ArrayList<Integer> removeArgs = new ArrayList<Integer>();
 		for(int i = 0; i < arguments.size(); i++){ 			//Iterate over all arguments
 			Argument argument = arguments.get(i);
 			if(isLeaf(argument,relations)==true){ 			//Check if the argument is an argument from the current layer
 				//TODO: work with a threshold
+				removeArgs.add(argument.getArgId());
+				ArrayList<Integer> removeRels = new ArrayList<Integer>();
 				for(int j = 0; j < relations.size(); j++){  //Iterate over all the relations
 					Relation relation = relations.get(j);
 															//Check if the origin of the relation is the current argument
@@ -162,20 +164,29 @@ public class Framework {
 							//Michael updates:
 							getRel(targetId, relations).setWeight(weight);
 							//relations.get(targetId).setWeight(weight);
-							
-							
 						}
 						
 						//Michael updates: you will need the relation to calculate the undercut
-						relations.remove(j); 					//remove this relation, because it is not necessary for the calculation anymore
+						//remove this relation, because it is not necessary for the calculation anymore
+						removeRels.add(relation.getRelId());
 					}
 				}
 				
 				//Michael updates: maybe not remove the argument because some argument will effect more than one arguments
-				arguments.remove(i); 							//Remove this argument, because it is not necessary for the calculation anymore
+				for(int k=0; k < removeRels.size();k++){
+					if(isNotTargetRel(getRel(removeRels.get(k),relations),relations)==true){
+						System.out.println("Removed relation "+getRel(removeRels.get(k),relations).getRelId());
+						relations.remove(getRel(removeRels.get(k),relations));
+					}
+				}
 			}
 		}
+		for(int k=0; k < removeArgs.size();k++){
+			System.out.println("Removed argument "+getArg(removeArgs.get(k),arguments).getArgId());
+			arguments.remove(getArg(removeArgs.get(k),arguments));
+		}
 		if(solved == false){ // If there are still arguments to be calcuted, recursively solve the remaining arguments and relations
+			System.out.println("It is not solved yet");
 			solution = evaluate (mode, threshold, arguments, relations, solution);
 		}
 		return solution; 	// If there were no more arguments to solve, return the current solution
@@ -188,11 +199,24 @@ public class Framework {
 		for (int i = 0; i < relations.size(); i++) {
 			if(relations.get(i).getTargetArgId() == argument.getArgId()){
 				return false; //If there is a relation with this argument as a target, the argument is not a leaf
+			}else if(relations.get(i).getOriginId() == argument.getArgId()){
+				if(isNotTargetRel(relations.get(i),relations)==false){
+					return false;
+				}
+			}			
+		}
+		System.out.println("Argument "+argument.getArgId()+" is a leaf.");
+		return true; //Otherwise it is a leaf
+	}
+	
+	public boolean isNotTargetRel(Relation relation, ArrayList<Relation> relations){
+		for (int i = 0; i < relations.size(); i++) {
+			if(relations.get(i).getTargetRelId() == relation.getRelId()){				
+				return false; //If there is a relation with this argument as a target, the argument is not a leaf
 			}
 		}
 		return true; //Otherwise it is a leaf
 	}
-	
 	
 	public void showLeaf(ArrayList<Argument> arguments,ArrayList<Relation> relations){
 		boolean isLeaf = true;
