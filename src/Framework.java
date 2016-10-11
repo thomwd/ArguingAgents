@@ -23,17 +23,48 @@ public class Framework {
 		this.topicSummary = summary;
 		this.arguments = argumentList;
 		this.relations = relationList;
+		this.positions = new ArrayList<Argument>();
+		positions.add(argumentList.get(0));
+		positions.add(argumentList.get(1));
+	}
+
+	public String getTopicDescription() {
+		return topicDescription;
+	}
+	public String getTopicSummary() {
+		return topicSummary;
+	}
+	public ArrayList<Argument> getPositions() {
+		return positions;
+	}
+	public void setPositions(ArrayList<Argument> positions) {
+		this.positions = positions;
+	}
+	public ArrayList<Argument> getArguments() {
+		return arguments;
+	}
+	public ArrayList<Relation> getRelations() {
+		return relations;
 	}
 
 
+	
 	//Function to calculate the activity of arguments, based on their mode
 	public double solveArgument (String mode, ArrayList<Argument> argumentList, Relation relation){
 		int targetId = relation.getTargetArgId();
 		int originId = relation.getOriginId();
-		Argument origin = argumentList.get(originId);
-		Argument target = argumentList.get(targetId);
+		
+		
+		//Michael updates:
+		Argument origin = getArg(originId, argumentList);
+		Argument target = getArg(targetId, argumentList);
+		System.out.println("relId: "+relation.getRelId()+" origin: "+origin.getSummary()+" target: "+target.getSummary());
+		
+		
 		if(mode == "POE"){ //Preponderance of Evidence
+			System.out.println("original activity for target: "+ target.getActivity());
 			double activity = target.getActivity() + (origin.getActivity() * relation.getWeight());
+			System.out.println("new activity for target: " + activity);
 			return activity;
 		}else if(mode == "BRD"){ //Beyond Reasonable Doubt
 			if((origin.getActivity() * relation.getWeight()) < 0){ //If the argument attacks the target argument, there is doubt, so set the activity of the target argument to 0
@@ -54,23 +85,37 @@ public class Framework {
 	}
 
 	public double solveRelation(String mode, ArrayList<Relation> relationList, ArrayList<Argument> argumentList, Relation relation){
-		int targetId = relation.getTargetRelId();
+		int targetRelId = relation.getTargetRelId();
 		int originId = relation.getOriginId();
-		Argument origin = argumentList.get(originId);
-		Relation target = relationList.get(targetId);
+		
+		
+		//Michael updates:
+		Argument origin = getArg(originId, argumentList);
+		Relation target = getRel(targetRelId, relationList);
+		//Argument origin = argumentList.get(originId);
+		//Relation target = relationList.get(targetId);
+		
+		
+		
 		double weight = 0; //TODO fix this
 		//TODO: how do the modes work with the relations?
 		// (Yannik:) I would skip modes for relations for now, think they are easier to understand for arguments
 
 		// TODO this update is complex, let's discuss this in person
+		System.out.println("redId: "+relation.getRelId()+" targetRel: "+target.getTargetRelId());
 		if(target.getWeight()<0){
 			weight = target.getWeight() - (origin.getActivity() * relation.getWeight());
 		}else{
 			weight = target.getWeight() + (origin.getActivity() * relation.getWeight());
 		}
+		System.out.println("original weight for target: "+target.getWeight());
+		System.out.println("new weight for target: "+weight);
 		return weight;
 	}
 
+	
+	
+	
 	/**
 	 * @param arguments ArrayList<Argument> a copy of the field 'arguments'. (Not just a copy of the reference)
 	 * @param relations ArrayList<Relations> a copy of the field 'relations'. (Not just a copy of the reference)
@@ -94,8 +139,17 @@ public class Framework {
 							double activity = solveArgument(mode, arguments, relation);
 							int targetId = relation.getTargetArgId();
 															//Add it to the argument list
-							arguments.get(targetId).setActivity(activity);
-							solution.get(targetId).setActivity(activity);
+														
+							//Michael updates:
+							getArg(targetId, arguments).setActivity(activity); //Michael: use arguments.get(i) will return i-th element in the ArrayList, so get(targetId) may not return the argument you want. 
+																			   //Michael: Create a function getArg() to return the argument by inputing the id of the argument  
+							//arguments.get(targetId).setActivity(activity);
+							
+							getArg(targetId, solution).setActivity(activity);
+							//solution.get(targetId).setActivity(activity);
+							
+							
+							
 							//If we want to do something with threshold it can be done here.
 						}
 						else if(relation.getTargetRelId()!=0){ //Check if the target of the relation is a relation
@@ -103,11 +157,21 @@ public class Framework {
 							double weight = solveRelation(mode, relations, arguments, relation); //Calculate the new weight for the relation
 							int targetId = relation.getTargetRelId();
 																//Add it to the weight list
-							relations.get(targetId).setWeight(weight);
+							
+							
+							//Michael updates:
+							getRel(targetId, relations).setWeight(weight);
+							//relations.get(targetId).setWeight(weight);
+							
+							
 						}
+						
+						//Michael updates: you will need the relation to calculate the undercut
 						relations.remove(j); 					//remove this relation, because it is not necessary for the calculation anymore
 					}
 				}
+				
+				//Michael updates: maybe not remove the argument because some argument will effect more than one arguments
 				arguments.remove(i); 							//Remove this argument, because it is not necessary for the calculation anymore
 			}
 		}
@@ -117,6 +181,8 @@ public class Framework {
 		return solution; 	// If there were no more arguments to solve, return the current solution
 	}
 
+	
+	
 	// See if there are any relations with this argument as a target
 	public boolean isLeaf(Argument argument, ArrayList<Relation> relations){
 		for (int i = 0; i < relations.size(); i++) {
@@ -126,4 +192,66 @@ public class Framework {
 		}
 		return true; //Otherwise it is a leaf
 	}
+	
+	
+	public void showLeaf(ArrayList<Argument> arguments,ArrayList<Relation> relations){
+		boolean isLeaf = true;
+		int size = arguments.size();
+		List<Integer> leafToRemove = new ArrayList<Integer>();
+		for(int i = 0;i<size;i++){
+			isLeaf = true;
+			List<Integer> relToRemove = new ArrayList<Integer>();
+			Argument argument = arguments.get(i);
+			int argId = argument.getArgId();
+			for(int j = 0;j<relations.size();j++){
+				Relation relation = relations.get(j);
+				if (relation.getTargetArgId() == argId) {
+					isLeaf = false;
+				}
+			}
+			if (isLeaf == true) {
+				System.out.println("Arg"+argId+" is leaf");
+				for(int j = 0; j<relations.size();j++){
+					if(relations.get(j).getOriginId() == argId){
+						relToRemove.add(relations.get(j).getRelId());
+					}
+				}
+				leafToRemove.add(argId);
+				for(int q = 0;q<relToRemove.size();q++){
+					System.out.println("removed relation:"+relToRemove.get(q));
+					relations.remove(getRel(relToRemove.get(q),relations));
+				}
+			}
+		}
+		for(int i = 0;i<leafToRemove.size();i++){
+			arguments.remove(getArg(leafToRemove.get(i),arguments));
+		}
+		System.out.println("go to next layer, size of remaining arguments: "+ arguments.size()+" size of remaining relations: "+relations.size());
+		if (arguments.size() != 0 ) {
+			showLeaf(arguments, relations);
+		}else return;
+		
+	}
+	
+	
+	public Argument getArg(int argId, ArrayList<Argument> arguments){
+		Argument argument = null;
+		for(int i = 0; i<arguments.size();i++){
+			if (arguments.get(i).getArgId() == argId) {
+				argument = arguments.get(i);
+			}
+		}
+		return argument;
+	}
+	
+	public Relation getRel(int relId, ArrayList<Relation> relations){
+		Relation relation = null;
+		for(int i = 0; i<relations.size();i++){
+			if (relations.get(i).getRelId() == relId) {
+				relation = relations.get(i);
+			}
+		}
+		return relation;
+	}
+	
 }

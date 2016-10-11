@@ -109,11 +109,13 @@ public class Import extends JFrame {
 				ArrayList<Relation> relArray= new ArrayList<Relation>();
 				argArray = ProcessXML.getArgument(document);
 				relArray = ProcessXML.getRelation(document);
-				//Mapping map = new Mapping(argArray,relArray);
-				Actions actions = new Actions(argArray,relArray);
+				String subject = ProcessXML.getSubject(document);
+				String subjectSummary = ProcessXML.getSummarySubject(document);
+				Framework framework = new Framework(subject, subjectSummary, argArray, relArray);
+				Actions actions = new Actions(argArray,relArray,framework);
 				Import.this.dispose();
 				actions.setVisible(true);
-				//map.setVisible(true);
+				
 
 			}
 		});

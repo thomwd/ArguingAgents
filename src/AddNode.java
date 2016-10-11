@@ -6,8 +6,8 @@ import com.mxgraph.view.mxStylesheet;
 
 public class AddNode extends Actions{
 	
-	public AddNode(ArrayList<Argument> argArray, ArrayList<Relation> relArray) {
-		super(argArray, relArray);
+	public AddNode(ArrayList<Argument> argArray, ArrayList<Relation> relArray,Framework framework) {
+		super(argArray, relArray,framework);
 	}
 
 	public static void addNode(String nodeInfo,int x ,int y,String argId){

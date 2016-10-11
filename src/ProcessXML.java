@@ -23,26 +23,20 @@ public class ProcessXML {
 	public static String getSubject(Document document){
 		String subject;
 		Element root = document.getRootElement();
-		Element head = root.element("head");
-		subject = head.elementText("subject");
+		Element framework = root.element("framework");
+		subject = framework.elementText("subject");
 		return subject;
 	}
 	
-	public static ArrayList<Conclusion> getConclusion(Document document) {
-		ArrayList<Conclusion> conArray= new ArrayList<Conclusion>();   
-		XPath xpathSelectorForCon = DocumentHelper.createXPath("//conclusion[@id]");
-	    List resultsForCon = xpathSelectorForCon.selectNodes(document);
-	    for ( Iterator iter = resultsForCon.iterator(); iter.hasNext(); ) {
-	    	Element element = (Element) iter.next();
-	    	String type = element.attributeValue("hypothType");
-	    	String conclusion = element.getText();
-	    	Conclusion con = new Conclusion();
-	    	con.addConclusionElement(type, conclusion);
-	    	conArray.add(con);
-	    }	
-	    return conArray;
+	public static String getSummarySubject(Document document){
+		String subject;
+		Element root = document.getRootElement();
+		Element framework = root.element("framework");
+		subject = framework.elementText("summary");
+		return subject;
 	}
 	
+
 	
 	public static ArrayList<Argument> getArgument(Document document){
 		int argIdIndicator = 1;

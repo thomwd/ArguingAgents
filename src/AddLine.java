@@ -43,8 +43,8 @@ public class AddLine extends Actions {
 		}
 	}
 
-	public AddLine(ArrayList<Argument> argArray, ArrayList<Relation> relArray) {
-		super(argArray, relArray);        
+	public AddLine(ArrayList<Argument> argArray, ArrayList<Relation> relArray,Framework framework) {
+		super(argArray, relArray,framework);        
 	}
 
 }
