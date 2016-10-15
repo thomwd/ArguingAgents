@@ -258,7 +258,7 @@ public class Framework {
 	}
 	
 	
-	public Argument getArg(int argId, ArrayList<Argument> arguments){
+	public static Argument getArg(int argId, ArrayList<Argument> arguments){
 		Argument argument = null;
 		for(int i = 0; i<arguments.size();i++){
 			if (arguments.get(i).getArgId() == argId) {
@@ -269,7 +269,7 @@ public class Framework {
 		return argument;
 	}
 	
-	public Relation getRel(int relId, ArrayList<Relation> relations){
+	public static Relation getRel(int relId, ArrayList<Relation> relations){
 		Relation relation = null;
 		for(int i = 0; i<relations.size();i++){
 			if (relations.get(i).getRelId() == relId) {

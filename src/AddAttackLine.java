@@ -1,10 +1,8 @@
 import java.util.ArrayList;
 import java.util.Hashtable;
-
-import com.mxgraph.model.mxCell;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxStylesheet;
-public class AddLine extends Actions {
+public class AddAttackLine extends Actions {
 	
 	
 	/**
@@ -37,13 +35,13 @@ public class AddLine extends Actions {
 				if (argArray.get(j).getArgId() == targetArgId) {
 					v2 = getM().get(argArray.get(j).getSummary()+"\r\n"+argArray.get(j).getActivity());
 				}
-			    Object line =  getGraph().insertEdge(parent, relId, weight, v1, v2,"lineStyle");
+			    getGraph().insertEdge(parent, relId, weight, v1, v2,"lineStyle");
 			}
 			
 		}
 	}
 
-	public AddLine(ArrayList<Argument> argArray, ArrayList<Relation> relArray,Framework framework) {
+	public AddAttackLine(ArrayList<Argument> argArray, ArrayList<Relation> relArray,Framework framework) {
 		super(argArray, relArray,framework);        
 	}
 
