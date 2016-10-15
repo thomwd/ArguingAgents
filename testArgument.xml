@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>  
+<?xml version="1.0" encoding="UTF-8"?>
 <argumentation>
 	<framework>
 		<subject>Should we buy a Windows computer or a Mac computer?</subject>
@@ -23,14 +23,14 @@
 			<summary>Buy_mac</summary>
 			<activation>0</activation>
 		</argument>
-		
+
 		<argument argId="2">
 			<agentId>2</agentId>
 			<text>Buy a Windows</text>
 			<summary>Buy_windows</summary>
 			<activation>0</activation>
 		</argument>
-		
+
 		<argument argId="3">
 			<agentId>1</agentId>
 			<text>Mac has less viruses</text>
@@ -47,8 +47,8 @@
 				</targetArgs>
 			</relations>
 		</argument>
-		
-		
+
+
 		<argument argId="4">
 			<agentId>2</agentId>
 			<text>You are an IT expert</text>
@@ -62,7 +62,7 @@
 				</targetRels>
 			</relations>
 		</argument>
-		
+
 		<argument argId="5">
 			<agentId>1</agentId>
 			<text>You are only used to unix</text>
@@ -70,7 +70,7 @@
 			<activation>1</activation>
 			<relations>
 				<targetRels>
-					<targetRelId relId = "4" weight = "-0.8">
+					<targetRelId relId = "4" weight = "-0.5">
 						3
 					</targetRelId>
 				</targetRels>
@@ -81,7 +81,7 @@
 				</targetArgs>
 			</relations>
 		</argument>
-		
+
 		<argument argId="6">
 			<agentId>1</agentId>
 			<text>You did not keep up with technology during the last five years</text>
