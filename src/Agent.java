@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Agent {
-	private int agentId;
+	//private int agentId;
 	private String name;
 	private ArrayList<Argument> arguments;
 	private double credibility;

@@ -33,6 +33,8 @@ public class Import extends JFrame {
 	private JTextField textField;
 	private File file;
 
+	private static ArrayList<Argument> argArray = new ArrayList<Argument>();
+	private static ArrayList<Relation> relArray = new ArrayList<Relation>();
 	
 	/**
 	 * Launch the application.
@@ -105,18 +107,16 @@ public class Import extends JFrame {
 		btnImport.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				ArrayList<Argument> argArray= new ArrayList<Argument>();
-				ArrayList<Relation> relArray= new ArrayList<Relation>();
 				argArray = ProcessXML.getArgument(document);
 				relArray = ProcessXML.getRelation(document);
+				ArrayList<Argument>argArrayCopy = Actions.copyArgArrayList(argArray);
+				ArrayList<Relation>relArrayCopy = Actions.copyRelArrayList(relArray);
 				String subject = ProcessXML.getSubject(document);
 				String subjectSummary = ProcessXML.getSummarySubject(document);
-				Framework framework = new Framework(subject, subjectSummary, argArray, relArray);
-				Actions actions = new Actions(argArray,relArray,framework);
+				Framework framework = new Framework(subject, subjectSummary, argArrayCopy, relArrayCopy);
+				Actions actions = new Actions(argArrayCopy,relArrayCopy);
 				Import.this.dispose();
 				actions.setVisible(true);
-				
-
 			}
 		});
 		btnImport.setBounds(471, 250, 168, 39);
@@ -129,5 +129,5 @@ public class Import extends JFrame {
 		contentPane.add(lblNewLabel);
 		
 	}
-	
+		
 }

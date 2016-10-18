@@ -12,7 +12,7 @@ public class AddNode extends Actions{
 	private static final long serialVersionUID = 1L;
 
 	public AddNode(ArrayList<Argument> argArray, ArrayList<Relation> relArray,Framework framework) {
-		super(argArray, relArray,framework);
+		super(argArray, relArray);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -31,7 +31,7 @@ public class AddNode extends Actions{
 
 		getGraph().getModel().beginUpdate();
 		Object parent = getGraph().getDefaultParent(); 
-		Object v1 = getGraph().insertVertex(parent, argId, nodeInfo, x, y, 150*1.5, 40*1.5,"nodeStyle");
+		Object v1 = getGraph().insertVertex(parent, argId, nodeInfo, x, y, 150*1.3, 40*1.5,"nodeStyle");
 		getM().put(nodeInfo, v1);
 		getGraph().getModel().endUpdate();
 	}

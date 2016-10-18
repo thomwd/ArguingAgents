@@ -5,7 +5,6 @@
 
 
  	//IMPORT MATHS
-import java.lang.Math;
 import java.util.*;
 public class Framework {
 	private  String topicDescription;		// what the argumentation is about
@@ -50,7 +49,7 @@ public class Framework {
 
 	
 	//Function to calculate the activity of arguments, based on their mode
-	public double solveArgument (String mode, ArrayList<Argument> argumentList, Relation relation){
+	public static double solveArgument (String mode, ArrayList<Argument> argumentList, Relation relation){
 		int targetId = relation.getTargetArgId();
 		int originId = relation.getOriginId();
 		
@@ -84,7 +83,7 @@ public class Framework {
 		}
 	}
 
-	public double solveRelation(String mode, ArrayList<Relation> relationList, ArrayList<Argument> argumentList, Relation relation){
+	public static double solveRelation(String mode, ArrayList<Relation> relationList, ArrayList<Argument> argumentList, Relation relation){
 		int targetRelId = relation.getTargetRelId();
 		int originId = relation.getOriginId();
 		
@@ -121,7 +120,7 @@ public class Framework {
 	 * @param solution ArrayList<Argument> a copy of the field 'arguments'. (Not just a copy of the reference)
 	 * @return ArrayList<Argument> a copy of the field 'arguments' for which all activations have been computed.
 	 */
-	public ArrayList<Argument> evaluate(String mode, double threshold, ArrayList<Argument> arguments,
+	public static ArrayList<Argument> evaluate(String mode, double threshold, ArrayList<Argument> arguments,
 										ArrayList<Relation> relations, ArrayList<Argument> solution){
 		boolean solved = true; // Flag to see if the framework is solved. Set to false if there are still arguments to be analyzed
 		ArrayList<Integer> removeArgs = new ArrayList<Integer>();
@@ -195,7 +194,7 @@ public class Framework {
 	
 	
 	// See if there are any relations with this argument as a target
-	public boolean isLeaf(Argument argument, ArrayList<Relation> relations){
+	public static boolean isLeaf(Argument argument, ArrayList<Relation> relations){
 		for (int i = 0; i < relations.size(); i++) {
 			if(relations.get(i).getTargetArgId() == argument.getArgId()){
 				return false; //If there is a relation with this argument as a target, the argument is not a leaf
@@ -209,7 +208,7 @@ public class Framework {
 		return true; //Otherwise it is a leaf
 	}
 	
-	public boolean isNotTargetRel(Relation relation, ArrayList<Relation> relations){
+	public static boolean isNotTargetRel(Relation relation, ArrayList<Relation> relations){
 		for (int i = 0; i < relations.size(); i++) {
 			if(relations.get(i).getTargetRelId() == relation.getRelId()){				
 				return false; //If there is a relation with this argument as a target, the argument is not a leaf

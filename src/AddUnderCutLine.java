@@ -5,7 +5,6 @@ import java.lang.Math;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel;
-import com.mxgraph.model.mxGraphModel.mxTerminalChange;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxStylesheet;
 public class AddUnderCutLine extends Actions {
@@ -19,7 +18,6 @@ public class AddUnderCutLine extends Actions {
 	public static void  addUnderCutLine(ArrayList<Argument> argArray, ArrayList<Relation> relArray) {
 		mxStylesheet stylesheet = graph.getStylesheet();
 		Hashtable<String, Object> style = new Hashtable<String,Object>();
-		
 		style.put(mxConstants.STYLE_FONTCOLOR, "#7A93C1");
 		style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
 		style.put(mxConstants.STYLE_FONTSIZE, 20);
@@ -31,7 +29,7 @@ public class AddUnderCutLine extends Actions {
 			Object targetRelCell = null;
 			Relation relation = relArray.get(i);
 			int originArgId = relation.getOriginId();
-			String relId = String.valueOf(relation.getRelId());
+			String relId = String.valueOf(relation.getRelId()+1000);
 			int targetRelId = relation.getTargetRelId();
 			if (targetRelId != 0) {
 				System.out.println("rel: "+relation.getRelId()+" from arg: "+originArgId+" undercuts rel: "+targetRelId);
@@ -64,7 +62,7 @@ public class AddUnderCutLine extends Actions {
 			            double yRelOriginCellFinal = targetRelOriginCell.getGeometry().getCenterY();
 			            double xMiddleCell = Math.min(xRelOriginCellFinal,xMiddlePointRel)+Math.abs(xRelOriginCellFinal-xMiddlePointRel)/2;
 			            double yMiddleCell = Math.min(yRelOriginCellFinal,yMiddlePointRel)+Math.abs(yRelOriginCellFinal-yMiddlePointRel)/2;
-			            targetRelCell = getGraph().insertVertex(parent, "", "", xMiddleCell, yMiddleCell, 0, 0,"nodeStyle");						
+			            targetRelCell = getGraph().insertVertex(parent, "999", "", xMiddleCell, yMiddleCell, 0, 0,"nodeStyle");
 					}else{
 					int targetRelOriginId = relArray.get(q).getOriginId();
 					int targetRelTargetId = relArray.get(q).getTargetArgId();
@@ -73,13 +71,17 @@ public class AddUnderCutLine extends Actions {
 					targetRelCell = getMiddleVertex(targetRelOriginCell, targetRelTargetCell);
 					}
 				}
-			}	
-		    getGraph().insertEdge(parent, relId, weight, originArg, targetRelCell,"lineStyle");
+			
+			}
+			if(originArg !=null && targetRelCell !=null){
+				mxCell mxCell = (com.mxgraph.model.mxCell) getGraph().insertEdge(parent, relId, weight, originArg, targetRelCell,"lineStyle");
+
+			}
 		}
 	}
 
 	public AddUnderCutLine(ArrayList<Argument> argArray, ArrayList<Relation> relArray,Framework framework) {
-		super(argArray, relArray,framework);        
+		super(argArray, relArray);        
 	}
 
 	public static Object getMiddleVertex(mxCell front,mxCell end) {	
@@ -89,7 +91,7 @@ public class AddUnderCutLine extends Actions {
         double yTargetCell = end.getGeometry().getCenterY();
         double xMiddleCell = Math.min(xOriginCell,xTargetCell)+Math.abs(xOriginCell-xTargetCell)/2;
         double yMiddleCell = Math.min(yOriginCell,yTargetCell)+Math.abs(yOriginCell-yTargetCell)/2;
-        Object middleCell = getGraph().insertVertex(getGraph().getDefaultParent(), "", "", xMiddleCell, yMiddleCell, 0, 0,"nodeStyle");
+        Object middleCell = getGraph().insertVertex(getGraph().getDefaultParent(), "1000", "", xMiddleCell, yMiddleCell, 0, 0,"nodeStyle");
 		return middleCell;
 	}
 	
