@@ -11,7 +11,7 @@ public class Relation {
 	private int targetRelId = 0;
 	private boolean support = true;
 
-	public Relation(int relId, int originId, int targetArgId, int targetRelId, double weight) {
+	public Relation(int relId, int originId, int targetArgId, int targetRelId, double weight, boolean flag) {
 		if(relId!= 0){
 				this.relId = relId;
 		}else{
@@ -22,7 +22,10 @@ public class Relation {
 		}
 		this.targetArgId = targetArgId;
 		this.targetRelId = targetRelId;
-		if(weight < 0.0){
+		if(flag == false){
+			this.weight = weight;
+		}
+		else if(weight < 0.0){
 			this.support = false;
 			this.weight = (weight*-1);
 		}else{
