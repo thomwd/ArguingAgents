@@ -86,16 +86,11 @@ public class Framework {
 		Relation target = getRel(targetRelId, relationList);
 		
 		double weight = 0;
-		//TODO: how do the modes work with the relations?
-		// (Yannik:) I would skip modes for relations for now, think they are easier to understand for arguments
 
 		// TODO this update is complex, let's discuss this in person
 		System.out.println("relId: "+relation.getRelId()+" targetRel: "+relation.getTargetRelId());
-		if(target.getWeight()<0){
-			weight = target.getWeight() - (origin.getActivity() * relation.getWeight());
-		}else{
-			weight = target.getWeight() + (origin.getActivity() * relation.getWeight());
-		}
+		
+		weight = target.getWeight() + (origin.getActivity() * relation.getWeight());
 		System.out.println("original weight for target: "+target.getWeight());
 		System.out.println("new weight for target: "+weight);
 		return weight;
@@ -116,6 +111,9 @@ public class Framework {
 		ArrayList<Integer> removeArgs = new ArrayList<Integer>();
 		for(int i = 0; i < arguments.size(); i++){ 			//Iterate over all arguments
 			Argument argument = arguments.get(i);
+			//Make sure that when we want to evaluate an argument, the activation is not below zero or above 1
+			if(argument.getActivity()<0){argument.setActivity(0);}
+			if(argument.getActivity()>1){argument.setActivity(1);}
 			if(isLeaf(argument,relations)==true){ 			//Check if the argument is an argument from the current layer
 				//TODO: work with a threshold
 				removeArgs.add(argument.getArgId()); //Add this argument to the list of arguments that need to be removed
@@ -124,6 +122,14 @@ public class Framework {
 					Relation relation = relations.get(j);
 					//Check if the origin of the relation is the current argument
 					if(relation.getOriginId() == argument.getArgId()){
+						if(relation.getWeight()<0){
+							relation.setFlag(!relation.getFlag());
+							relation.setWeight(relation.getWeight()*-1);
+						}
+						if(relation.getFlag()==false){
+							relation.setWeight(relation.getWeight()*-1);
+						}
+						
 						if(relation.getTargetArgId()!=0){ 	//Check if the target of the relation is an argument
 							solved = false; 				//There are still arguments to analyze					
 							double activity = solveArgument(mode, arguments, relation); //Calculate the new activity for the argument
@@ -131,9 +137,10 @@ public class Framework {
 	
 							getArg(targetId, arguments).setActivity(activity);
 							
+							//Make sure that activation is not below zero or above 1
+							if(activity<0){activity=0;}
+							if(activity>1){activity=1;}	
 							getArg(targetId, solution).setActivity(activity);
-							
-							//If we want to do something with threshold it can be done here.
 						}
 						else if(relation.getTargetRelId()!=0){ //Check if the target of the relation is a relation
 							solved = false; 				   //There are still arguments to analyze

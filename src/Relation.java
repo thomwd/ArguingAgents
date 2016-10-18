@@ -9,6 +9,7 @@ public class Relation {
 	//The agent only knows which relation between two arguments it undercuts instead of the id of that relation.
 */	private  double weight = 0; //The weight of this relation. TODO: think of sensible values
 	private int targetRelId = 0;
+	private boolean support = true;
 
 	public Relation(int relId, int originId, int targetArgId, int targetRelId, double weight) {
 		if(relId!= 0){
@@ -21,7 +22,10 @@ public class Relation {
 		}
 		this.targetArgId = targetArgId;
 		this.targetRelId = targetRelId;
-		if(weight != 0){
+		if(weight < 0){
+			support = false;
+			this.weight = (weight*-1);
+		}else{
 			this.weight = weight;
 		}
 	}
@@ -34,6 +38,13 @@ public class Relation {
 	    }
 	}
 
+	public void setFlag(boolean flag){
+		support = flag;
+	}
+	
+	public boolean getFlag(){
+		return support;
+	}
 
 
 	public int getTargetRelId() {
