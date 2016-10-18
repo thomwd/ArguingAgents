@@ -22,8 +22,8 @@ public class Relation {
 		}
 		this.targetArgId = targetArgId;
 		this.targetRelId = targetRelId;
-		if(weight < 0){
-			support = false;
+		if(weight < 0.0){
+			this.support = false;
 			this.weight = (weight*-1);
 		}else{
 			this.weight = weight;
@@ -38,11 +38,11 @@ public class Relation {
 	    }
 	}
 
-	public void setFlag(boolean flag){
+	public void setFlag(boolean flag){ //set this flag to false if the relation is an attack relation and to true if it is a support relation 
 		support = flag;
 	}
 	
-	public boolean getFlag(){
+	public boolean getFlag(){ //returns false if it is an attack relation and true if it is a support relation
 		return support;
 	}
 
