@@ -24,6 +24,7 @@ public class Relation {
 		this.targetRelId = targetRelId;
 		if(flag == false){
 			this.weight = weight;
+			this.support = false;
 		}
 		else if(weight < 0.0){
 			this.support = false;

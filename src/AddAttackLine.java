@@ -21,6 +21,16 @@ public class AddAttackLine extends Actions {
 		style.put(mxConstants.STYLE_FONTSIZE, 20);
 		stylesheet.putCellStyle("lineStyle", style);
 		
+		
+		Hashtable<String, Object> styleNeg = new Hashtable<String,Object>();
+		styleNeg.put(mxConstants.STYLE_FONTCOLOR, "#E50B0B");
+		styleNeg.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
+		styleNeg.put(mxConstants.STYLE_FONTSIZE, 20);
+		stylesheet.putCellStyle("lineStyleNeg", styleNeg);
+		
+		
+		
+		
 		Object parent = getGraph().getDefaultParent();
 		for(int i = 0; i<relArray.size();i++){
 			Object v1 = null;
@@ -45,8 +55,15 @@ public class AddAttackLine extends Actions {
 						
 					    if(v1 !=null && v2 !=null)
 					    {
-					    	mxCell cell = (mxCell) getGraph().insertEdge(parent, relId, weight, v1, v2,"lineStyle");
-							break;
+					    	if (relArray.get(i).getFlag()) {
+					    		mxCell cell = (mxCell) getGraph().insertEdge(parent, relId, weight, v1, v2,"lineStyle");
+								break;
+							}else{
+								mxCell cell = (mxCell) getGraph().insertEdge(parent, relId, weight, v1, v2,"lineStyleNeg");
+								break;
+								
+							}
+					    	
 
 						}
 						

@@ -23,6 +23,16 @@ public class AddUnderCutLine extends Actions {
 		style.put(mxConstants.STYLE_FONTSIZE, 20);
 		stylesheet.putCellStyle("lineStyle", style);
 		
+		
+		Hashtable<String, Object> styleNeg = new Hashtable<String,Object>();
+		styleNeg.put(mxConstants.STYLE_FONTCOLOR, "#E50B0B");
+		styleNeg.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
+		styleNeg.put(mxConstants.STYLE_FONTSIZE, 20);
+		stylesheet.putCellStyle("lineStyleNeg", styleNeg);
+		
+		
+		
+		
 		Object parent = getGraph().getDefaultParent();
 		for(int i = 0; i<relArray.size();i++){ //for each relation
 			Object originArg = null;
@@ -74,7 +84,14 @@ public class AddUnderCutLine extends Actions {
 			
 			}
 			if(originArg !=null && targetRelCell !=null){
-				mxCell mxCell = (com.mxgraph.model.mxCell) getGraph().insertEdge(parent, relId, weight, originArg, targetRelCell,"lineStyle");
+				
+				
+				if (relArray.get(i).getFlag()) {
+					mxCell mxCell = (com.mxgraph.model.mxCell) getGraph().insertEdge(parent, relId, weight, originArg, targetRelCell,"lineStyle");
+				}else{
+					mxCell mxCell = (com.mxgraph.model.mxCell) getGraph().insertEdge(parent, relId, weight, originArg, targetRelCell,"lineStyleNeg");
+
+				}
 
 			}
 		}

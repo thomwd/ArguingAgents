@@ -102,7 +102,6 @@ public class Actions extends JFrame {
 		}
 		
 		
-		
 		AddAttackLine.addLine(argArray, relArray);
 				
         graphComponent.getGraphControl().addMouseListener(new MouseAdapter()
@@ -158,13 +157,19 @@ public class Actions extends JFrame {
         evaluation.setBounds(1373, 370, 168, 50);
         evaluation.setFont(new Font("Arial", Font.PLAIN, 20));
         evaluation.setPreferredSize(new Dimension(168, 50));
-        
         evaluation.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
 				ArrayList<Argument> argArrayCopy = copyArgArrayList(argArray);
 				ArrayList<Relation> relArrayCopy =  copyRelArrayList(relArray);
+				ArrayList<Relation> relArrayForEvl = new ArrayList<Relation>();
+				for(int i=0; i<relArrayCopy.size();i++){
+					Relation temp = relArrayCopy.get(i);
+					relArrayForEvl.add(temp);
+				}
+				
+				
 				ArrayList<Argument> soList = copyArgArrayList(argArray);
 				 
 				String newSummary = null;
@@ -195,10 +200,19 @@ public class Actions extends JFrame {
 				styleUpdate.put(mxConstants.STYLE_FONTSIZE, 15);
 				stylesheetUpdate.putCellStyle("updateStyle", styleUpdate);
 					
-						
 				
-				ArrayList<Argument> solution = Framework.evaluate("POE", 0, argArrayCopy, relArrayCopy,soList);			   
+				for (int i = 0; i < relArrayCopy.size(); i++) {
+					System.out.println("Rel Id: "+ relArrayCopy.get(i).getRelId()+" original weight: "+relArrayCopy.get(i).getWeight());
+				}
+				
+				
+				ArrayList<Argument> solution = Framework.evaluate("POE", 0, argArrayCopy, relArrayForEvl,soList);			   
+							
 					
+				for (int i = 0; i < relArrayCopy.size(); i++) {
+					System.out.println("Rel Id: "+ relArrayCopy.get(i).getRelId()+" evaluted weight: "+relArrayCopy.get(i).getWeight());
+				}
+				
 				
 				
 				for (int i = 0; i < solution.size(); i++) {
@@ -217,6 +231,18 @@ public class Actions extends JFrame {
 					conclusion= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(1).getArgId()+1));
 				}
 				graph.getModel().setStyle(conclusion, "winnerStyle");
+				
+				
+				for(int i = 0;i<relArrayCopy.size();i++){
+					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(relArrayCopy.get(i).getRelId()+1000));
+					newSummary = String.valueOf(Math.abs(round(relArrayCopy.get(i).getWeight(),2)));
+					graph.getModel().setValue(result, newSummary);
+					Hashtable<String, Object> styleEdgeNew = getEdgeColor(relArrayCopy.get(i).getWeight());
+					mxStylesheet stylesheetEdgeNew = graph.getStylesheet();
+					stylesheetEdgeNew.putCellStyle("updateEdgeStyle", styleEdgeNew);
+					graph.getModel().setStyle(result, "updateEdgeStyle");
+				}
+				
 			    evaluation.setEnabled(false);	
 			    undoButton.setEnabled(true);
 			    changeAT.setEnabled(false);
@@ -225,32 +251,32 @@ public class Actions extends JFrame {
         
       
         
-//        undoButton.setFont(new Font("Arial", Font.PLAIN, 20));
-//        getContentPane().add(undoButton);
-//        undoButton.setPreferredSize(new Dimension(168, 50));
-//        undoButton.setEnabled(false);
-//        undoButton.addActionListener(new ActionListener() {
-//			
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				((mxGraphModel)graph.getModel()).clear();
-//				graph.setCellsMovable(true);
-//		        graph.setEdgeLabelsMovable(true);
-//		        graph.setAllowDanglingEdges(true);
-//		        graph.setSplitEnabled(true);
-//		        graphComponent.setConnectable(true);
-//				Actions newAction = new Actions(argArray,relArray);
-//				Actions.this.dispose();
-//				newAction.setVisible(true);
-//				evaluation.setEnabled(true);
-//				undoButton.setEnabled(false);
-//			}
-//		});
-//        
+        undoButton.setFont(new Font("Arial", Font.PLAIN, 20));
+        undoButton.setPreferredSize(new Dimension(168, 50));
+        undoButton.setBounds(1373, 496, 168, 50);
+        undoButton.setEnabled(false);
+        undoButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((mxGraphModel)graph.getModel()).clear();
+				graph.setCellsMovable(true);
+		        graph.setEdgeLabelsMovable(true);
+		        graph.setAllowDanglingEdges(true);
+		        graph.setSplitEnabled(true);
+		        graphComponent.setConnectable(true);
+				Actions newAction = new Actions(argArray,relArray);
+				Actions.this.dispose();
+				newAction.setVisible(true);
+				evaluation.setEnabled(true);
+				undoButton.setEnabled(false);
+			}
+		});
+        
         
         
         restart = new JButton("Restart");
-        restart.setBounds(1373, 496, 168, 50);
+        restart.setBounds(1373, 559, 168, 50);
         restart.setFont(new Font("Arial", Font.PLAIN, 20));
         restart.setPreferredSize(new Dimension(168, 50));
         restart.addActionListener(new ActionListener() {
@@ -305,12 +331,10 @@ public class Actions extends JFrame {
         
               
         
-        
         getContentPane().add(evaluation);
         getContentPane().add(changeAT);
         getContentPane().add(restart);
-
-        
+        getContentPane().add(undoButton);
 	}
 
 	
@@ -327,7 +351,7 @@ public class Actions extends JFrame {
 	public static ArrayList<Argument> copyArgArrayList(ArrayList<Argument> origin) {
 		ArrayList<Argument> copy = new ArrayList<Argument>();
 		for(int i = 0; i<origin.size();i++){
-			Argument temp = origin.get(i);
+			Argument temp = new Argument(origin.get(i).getArgId(), origin.get(i).getAgentId(), origin.get(i).getText(), origin.get(i).getSummary(), origin.get(i).getActivity());
 			copy.add(temp);
 		}
 		return copy;
@@ -336,11 +360,39 @@ public class Actions extends JFrame {
 	public static ArrayList<Relation> copyRelArrayList(ArrayList<Relation> origin) {
 		ArrayList<Relation> copy = new ArrayList<Relation>();
 		for(int i = 0; i<origin.size();i++){
-			Relation temp = origin.get(i);
+			Relation temp = new Relation(origin.get(i).getRelId(), origin.get(i).getOriginId(), origin.get(i).getTargetArgId(), origin.get(i).getTargetRelId()
+					, origin.get(i).getWeight(), origin.get(i).getFlag());			
 			copy.add(temp);
 		}
 		return copy;
 	}
+	
+	
+	public Hashtable<String, Object> getEdgeColor(double weight) {
+		
+		//mxStylesheet stylesheet = graph.getStylesheet();
+		
+		Hashtable<String, Object> style = new Hashtable<String,Object>();
+		style.put(mxConstants.STYLE_FONTCOLOR, "#7A93C1");
+		style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
+		style.put(mxConstants.STYLE_FONTSIZE, 20);
+		
+		
+		
+		Hashtable<String, Object> styleNeg = new Hashtable<String,Object>();
+		styleNeg.put(mxConstants.STYLE_FONTCOLOR, "#E50B0B");
+		styleNeg.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
+		styleNeg.put(mxConstants.STYLE_FONTSIZE, 20);
+		
+		
+		if(weight>=0){
+			return style;
+		}else{
+			return styleNeg;
+		}
+		
+	}
+	
 	
 }
 

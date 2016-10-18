@@ -73,7 +73,8 @@ public class ProcessXML {
 	    		int originId = argId;
 	    		int targetArgId = Integer.parseInt(elementTargetArg.getText().trim());
 	    		double weight = Double.parseDouble(elementTargetArg.attributeValue("weight"));
-	    		Relation relation = new Relation(relId, originId, targetArgId, 0, weight);
+	    		boolean flag = true;
+	    		Relation relation = new Relation(relId, originId, targetArgId, 0, weight,flag);
 	    		System.out.println("relId:"+relId+",originId:"+originId+",targetArgId:"+targetArgId+",weight:"+weight);
 	    		relArray.add(relation);
 	    	}
@@ -86,7 +87,8 @@ public class ProcessXML {
 	    		int originId = argId;
 	    		int targetRelId = Integer.parseInt(elementRelArg.getText().trim());
 	    		double weight = Double.parseDouble(elementRelArg.attributeValue("weight"));
-	    		Relation relation = new Relation(relId, originId, 0, targetRelId, weight);
+	    		boolean flag = true;
+	    		Relation relation = new Relation(relId, originId, 0, targetRelId, weight,flag);
 	    		System.out.println("relId:"+relId+",originId:"+originId+",targetRelId:"+targetRelId+",weight:"+weight);
 	    		relArray.add(relation);
 	    	}	    	
