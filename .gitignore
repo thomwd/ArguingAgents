@@ -1,6 +1,7 @@
 .metadata*
 .project
 out/*
-.iml*
+*.iml
 .ide*
 out/*
+
