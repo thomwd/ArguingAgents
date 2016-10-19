@@ -18,14 +18,14 @@ public class AddAttackLine extends Actions {
 		
 		style.put(mxConstants.STYLE_FONTCOLOR, "#7A93C1");
 		style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
-		style.put(mxConstants.STYLE_FONTSIZE, 20);
+		style.put(mxConstants.STYLE_FONTSIZE, 18);
 		stylesheet.putCellStyle("lineStyle", style);
 		
 		
 		Hashtable<String, Object> styleNeg = new Hashtable<String,Object>();
 		styleNeg.put(mxConstants.STYLE_FONTCOLOR, "#E50B0B");
 		styleNeg.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
-		styleNeg.put(mxConstants.STYLE_FONTSIZE, 20);
+		styleNeg.put(mxConstants.STYLE_FONTSIZE, 18);
 		stylesheet.putCellStyle("lineStyleNeg", styleNeg);
 		
 		

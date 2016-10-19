@@ -1,32 +1,17 @@
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoManager;
-
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.model.mxCell;
@@ -54,8 +39,9 @@ public class Actions extends JFrame {
 	private JButton undoButton = new JButton("Restore");
 	private  mxIGraphLayout layout;
     private static int selectedCellId = 0;
-
-	
+    private static mxCell selectedCell = null;
+    private static ArrayList<Argument> argArrayCopy;
+	private static ArrayList<Relation> relArrayCopy;
 	
 	
 
@@ -152,6 +138,9 @@ public class Actions extends JFrame {
         graph.setSplitEnabled(false);
         graphComponent.setConnectable(false);
         
+        argArrayCopy = copyArgArrayList(argArray);
+		relArrayCopy = copyRelArrayList(relArray);
+        
         
         evaluation = new JButton("Evaluate");
         evaluation.setBounds(1373, 370, 168, 50);
@@ -161,16 +150,17 @@ public class Actions extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				ArrayList<Argument> argArrayCopy = copyArgArrayList(argArray);
-				ArrayList<Relation> relArrayCopy =  copyRelArrayList(relArray);
+				ArrayList<Argument> argArrayCopyNew = copyArgArrayList(argArrayCopy);
+				ArrayList<Relation> relArrayCopyNew =  copyRelArrayList(relArrayCopy);
+					
 				ArrayList<Relation> relArrayForEvl = new ArrayList<Relation>();
-				for(int i=0; i<relArrayCopy.size();i++){
-					Relation temp = relArrayCopy.get(i);
+				for(int i=0; i<relArrayCopyNew.size();i++){
+					Relation temp = relArrayCopyNew.get(i);
 					relArrayForEvl.add(temp);
 				}
 				
 				
-				ArrayList<Argument> soList = copyArgArrayList(argArray);
+				ArrayList<Argument> soList = copyArgArrayList(argArrayCopy);
 				 
 				String newSummary = null;
 				mxCell result = null;
@@ -183,46 +173,24 @@ public class Actions extends JFrame {
 				style.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_BOTTOM);
 				style.put(mxConstants.STYLE_FILLCOLOR, "#ADF1D2");
 				style.put(mxConstants.STYLE_FONTCOLOR, "#774400");
-				style.put(mxConstants.STYLE_FONTSIZE, 15);
+				style.put(mxConstants.STYLE_FONTSIZE, 17);
 				style.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
 				stylesheet.putCellStyle("winnerStyle", style);
 				
 				
 				
-				mxStylesheet stylesheetUpdate = graph.getStylesheet();
-				Hashtable<String, Object> styleUpdate = new Hashtable<String,Object>();
-				styleUpdate.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
-				styleUpdate.put(mxConstants.STYLE_OPACITY, 50);
-				styleUpdate.put(mxConstants.STYLE_ALIGN, mxConstants.ALIGN_CENTER);
-				styleUpdate.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_BOTTOM);
-				styleUpdate.put(mxConstants.STYLE_FILLCOLOR, "#FFFFFF");
-				styleUpdate.put(mxConstants.STYLE_FONTCOLOR, "#D63E3E");
-				styleUpdate.put(mxConstants.STYLE_FONTSIZE, 15);
-				stylesheetUpdate.putCellStyle("updateStyle", styleUpdate);
-					
+				ArrayList<Argument> solution = Framework.evaluate("POE", 0, argArrayCopyNew, relArrayForEvl,soList);			   
 				
-				for (int i = 0; i < relArrayCopy.size(); i++) {
-					System.out.println("Rel Id: "+ relArrayCopy.get(i).getRelId()+" original weight: "+relArrayCopy.get(i).getWeight());
-				}
-				
-				
-				ArrayList<Argument> solution = Framework.evaluate("POE", 0, argArrayCopy, relArrayForEvl,soList);			   
-							
-					
-				for (int i = 0; i < relArrayCopy.size(); i++) {
-					System.out.println("Rel Id: "+ relArrayCopy.get(i).getRelId()+" evaluted weight: "+relArrayCopy.get(i).getWeight());
-				}
-				
-				
-				
+								
 				for (int i = 0; i < solution.size(); i++) {
-					int argId =  solution.get(i).getArgId();
-					String summary = solution.get(i).getSummary();
-					//System.out.println("Conclusion: argID: "+argId+" summary: "+summary+" activation: "+solution.get(i).getActivity());
 					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(i).getArgId()+1));
 					newSummary = solution.get(i).getSummary()+"\r\n"+round(solution.get(i).getActivity(),2);
+					System.out.println("set new AT: +++++++++" + solution.get(i).getActivity() );
 					graph.getModel().setValue(result, newSummary);
-					graph.getModel().setStyle(result, "updateStyle");
+					Hashtable<String, Object> styleNodeNew = getNodeColor(argArrayCopy.get(i).getActivity(), solution.get(i).getActivity());
+					mxStylesheet stylesheetNodeNew = graph.getStylesheet();
+					stylesheetNodeNew.putCellStyle("updatedNodeStyle", styleNodeNew);
+					graph.getModel().setStyle(result, "updatedNodeStyle");
 				}
 				mxCell conclusion = null;
 				if (solution.get(0).getActivity()>solution.get(1).getActivity()){
@@ -234,10 +202,10 @@ public class Actions extends JFrame {
 				
 				
 				for(int i = 0;i<relArrayCopy.size();i++){
-					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(relArrayCopy.get(i).getRelId()+1000));
-					newSummary = String.valueOf(Math.abs(round(relArrayCopy.get(i).getWeight(),2)));
+					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(relArrayCopyNew.get(i).getRelId()+1000));
+					newSummary = String.valueOf(Math.abs(round(relArrayCopy.get(i).getWeight(),2)))+" >> "+String.valueOf(Math.abs(round(relArrayCopyNew.get(i).getWeight(),2)));
 					graph.getModel().setValue(result, newSummary);
-					Hashtable<String, Object> styleEdgeNew = getEdgeColor(relArrayCopy.get(i).getWeight());
+					Hashtable<String, Object> styleEdgeNew = getEdgeColor(relArrayCopyNew.get(i).getWeight());
 					mxStylesheet stylesheetEdgeNew = graph.getStylesheet();
 					stylesheetEdgeNew.putCellStyle("updateEdgeStyle", styleEdgeNew);
 					graph.getModel().setStyle(result, "updateEdgeStyle");
@@ -302,35 +270,87 @@ public class Actions extends JFrame {
         changeAT.setBounds(1373, 433, 168, 50);
         changeAT.setFont(new Font("Arial", Font.PLAIN, 20));
         changeAT.setPreferredSize(new Dimension(168, 50));
-        
+        changeAT.setEnabled(false);
 
+        //ArrayList<Argument> argArrayForNewAT = copyArgArrayList(argArray);
+        //ArrayList<Relation> relArrayForNewWT = copyRelArrayList(relArray);
         graph.getSelectionModel().addListener(mxEvent.CHANGE, new mxIEventListener() {
 			
 			@Override
 			public void invoke(Object arg0, mxEventObject arg1) {
 				selectedCellId = Integer.parseInt(((mxCell)graph.getSelectionCell()).getId())-1;
+				selectedCell = (mxCell)graph.getSelectionCell();
+				//changeAT.setEnabled(true);
 			}
 		});
         changeAT.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Argument selectedArg = Framework.getArg(selectedCellId, argArray);
+				Argument selectedArg = Framework.getArg(selectedCellId, argArrayCopy);
 				if(selectedArg != null){
 					String v1 = JOptionPane.showInputDialog("Set the activation");
-					selectedArg.setActivity(Double.parseDouble(v1));
-					System.out.println(selectedArg.getActivity());
+					
+					if (v1 != null &&v1.length() >0) {
+						String newSummary = selectedArg.getSummary()+"\r\n"+round(Double.parseDouble(v1),2);
+						graph.getModel().setValue(selectedCell, newSummary);
+						selectedArg.setActivity(Double.parseDouble(v1));
+					}
+					
+					
 				}else{
-					int selectedRelId = selectedCellId-1000+1;
-					Relation selectedRel = Framework.getRel(selectedRelId, relArray);
 					String v2 = JOptionPane.showInputDialog("Set the weight");
-					selectedRel.setWeight(Double.parseDouble(v2));
-					System.out.println(selectedRel.getWeight());
+					if (v2 != null && v2.length() != 0) {
+						int selectedRelId = selectedCellId-1000+1;
+						Relation selectedRel = Framework.getRel(selectedRelId, relArrayCopy);
+						String newSummary = v2;
+						graph.getModel().setValue(selectedCell, newSummary);
+						selectedRel.setWeight(Double.parseDouble(v2));
+					}
+										
 				}
 			}
 		});
         
               
         
+        graphComponent.getGraphControl().addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				mxCell cell = (mxCell) graphComponent.getCellAt(e.getX(), e.getY());
+				if (cell == null) {
+					changeAT.setEnabled(false);
+				}else{
+					changeAT.setEnabled(true);
+				}
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});       
+         
         getContentPane().add(evaluation);
         getContentPane().add(changeAT);
         getContentPane().add(restart);
@@ -370,25 +390,54 @@ public class Actions extends JFrame {
 	
 	public Hashtable<String, Object> getEdgeColor(double weight) {
 		
-		//mxStylesheet stylesheet = graph.getStylesheet();
 		
 		Hashtable<String, Object> style = new Hashtable<String,Object>();
 		style.put(mxConstants.STYLE_FONTCOLOR, "#7A93C1");
 		style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
-		style.put(mxConstants.STYLE_FONTSIZE, 20);
+		style.put(mxConstants.STYLE_FONTSIZE, 18);
 		
 		
 		
 		Hashtable<String, Object> styleNeg = new Hashtable<String,Object>();
 		styleNeg.put(mxConstants.STYLE_FONTCOLOR, "#E50B0B");
 		styleNeg.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
-		styleNeg.put(mxConstants.STYLE_FONTSIZE, 20);
+		styleNeg.put(mxConstants.STYLE_FONTSIZE, 18);
 		
 		
 		if(weight>=0){
 			return style;
 		}else{
 			return styleNeg;
+		}
+		
+	}
+	
+	public Hashtable<String, Object> getNodeColor(double originalAT, double evlAT) {
+		
+
+		Hashtable<String, Object> biggerAT = new Hashtable<String,Object>();
+		biggerAT.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
+		biggerAT.put(mxConstants.STYLE_OPACITY, 50);
+		biggerAT.put(mxConstants.STYLE_ALIGN, mxConstants.ALIGN_CENTER);
+		biggerAT.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_BOTTOM);
+		biggerAT.put(mxConstants.STYLE_FILLCOLOR, "#FFFFFF");
+		biggerAT.put(mxConstants.STYLE_FONTCOLOR, "#078E6F");
+		biggerAT.put(mxConstants.STYLE_FONTSIZE, 16);
+		
+
+		Hashtable<String, Object> smallerAT = new Hashtable<String,Object>();
+		smallerAT.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
+		smallerAT.put(mxConstants.STYLE_OPACITY, 50);
+		smallerAT.put(mxConstants.STYLE_ALIGN, mxConstants.ALIGN_CENTER);
+		smallerAT.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_BOTTOM);
+		smallerAT.put(mxConstants.STYLE_FILLCOLOR, "#FFFFFF");
+		smallerAT.put(mxConstants.STYLE_FONTCOLOR, "#D63E3E");
+		smallerAT.put(mxConstants.STYLE_FONTSIZE, 16);
+			
+		if(originalAT>evlAT){
+			return smallerAT;
+		}else{
+			return biggerAT;
 		}
 		
 	}
