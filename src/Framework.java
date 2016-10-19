@@ -178,7 +178,8 @@ public class Framework {
 	} // end function evaluate
 
 	
-	
+
+
 	// See if there are any relations with this argument as a target
 	public static boolean isLeaf(Argument argument, ArrayList<Relation> relations){
 		for (int i = 0; i < relations.size(); i++) {
@@ -193,7 +194,10 @@ public class Framework {
 		System.out.println("Argument "+argument.getArgId()+" is a leaf.");
 		return true; //Otherwise it is a leaf
 	}
-	
+
+
+
+
 	public static boolean isNotTargetRel(Relation relation, ArrayList<Relation> relations){
 	//Check if a given relation is the target of another relation (and thus still needs to be analyzed)
 		for (int i = 0; i < relations.size(); i++) {
