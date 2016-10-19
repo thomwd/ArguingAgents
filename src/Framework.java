@@ -105,6 +105,7 @@ public class Framework {
 	 * @param solution ArrayList<Argument> a copy of the field 'arguments'. (Not just a copy of the reference)
 	 * @return ArrayList<Argument> a copy of the field 'arguments' for which all activations have been computed.
 	 */
+	//TODO: if threshold is changed to a function (lambda expression), this also needs to be changed in the argContribution method.
 	public static ArrayList<Argument> evaluate(String mode, double threshold, ArrayList<Argument> arguments,
 										ArrayList<Relation> relations, ArrayList<Argument> solution){
 		boolean solved = true;                              // if false, function will call itself recursively.
@@ -170,14 +171,48 @@ public class Framework {
 			arguments.remove(getArg(removeArgs.get(k),arguments));
 		}
 		// If there are still arguments to be calculated, recursively solve the remaining arguments and relations
-		if(solved == false){ 
+		if(!solved){
 			System.out.println("It is not solved yet");
 			solution = evaluate (mode, threshold, arguments, relations, solution);
 		}
 		return solution; 	// If there were no more arguments to solve, return the current solution
 	} // end function evaluate
 
-	
+    /**
+     * Calculates the contribution of this argument (and the subtree of arguments that attack/support it)
+     * by creating a dummy argument with permanent activation 0 and no incoming relations. All outgoing
+     * relations are transferred to the dummy argument such that they will not have any effect on other
+     * arguments/relations.
+     * @param  argId The argument id for which we contribute the contribution
+     * @param  mode The mode that we use in the call to evaluate
+     * @param  threshold The threshold that we use in the call to evaluate
+     * @return updatedPos: The updated copies of the positions. We can then compare their activation to
+     *                     our the activation of our real positions.
+     */
+    public ArrayList<Argument> argContribution(int argId, String mode, double threshold) {
+        ArrayList<Argument> copyArgs = Actions.copyArgArrayList(arguments);
+        ArrayList<Relation> copyRels = Actions.copyRelArrayList(relations);
+        Argument original = getArg(argId, arguments);
+        int newId = 99999;                          // needs to be unique TODO: which id should be specified
+        int oldId = original.getArgId();            // dummy has and keeps 0 activation
+        Argument dummy = new Argument(newId, original.getAgentId(), "dummy", "dummy", 0);
+        copyArgs.add(dummy);
+        for(int j = 0; j < copyRels.size(); j++) {  // Transfer all outgoing relations
+            Relation rel = copyRels.get(j);         // from original to dummy
+            if(rel.getOriginId() == oldId) {        // so these will not have any effect
+                rel.setOriginId(newId);             // since the activation of dummy is always 0
+            }                                       // because there are no incoming relations
+        }
+        // Recompute activation after effectively removing all outgoing relations
+        ArrayList<Argument> updatedArgs = new ArrayList<>();
+        updatedArgs = evaluate(mode, threshold, copyArgs, copyRels, updatedArgs);
+        ArrayList<Argument> updatedPos = new ArrayList<>();
+        for (int j = 0; j < positions.size(); j++) {    // return updated Positions
+            int posId = positions.get(j).getArgId();    // get old position id
+            updatedPos.add(getArg(posId, updatedArgs)); // add matching argument (== updated position)
+        }
+        return updatedPos;                              // return updated positions
+    }
 
 
 	// See if there are any relations with this argument as a target
@@ -194,8 +229,6 @@ public class Framework {
 		System.out.println("Argument "+argument.getArgId()+" is a leaf.");
 		return true; //Otherwise it is a leaf
 	}
-
-
 
 
 	public static boolean isNotTargetRel(Relation relation, ArrayList<Relation> relations){

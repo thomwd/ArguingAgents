@@ -34,6 +34,10 @@ public class Relation {
 		}
 	}
 
+	public void setOriginId(int id) {
+		this.originId = id;
+	}
+
 	public int getTargetArgId() {
 		if(targetArgId != 0){
 	      return targetArgId;
