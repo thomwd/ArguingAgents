@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -17,6 +18,7 @@ import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.swing.handler.mxCellHandler;
 import com.mxgraph.swing.util.mxMorphing;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxEvent;
@@ -24,6 +26,8 @@ import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 public class Actions extends JFrame {
 	/**
@@ -37,6 +41,7 @@ public class Actions extends JFrame {
 	private JButton restart;
 	private JButton changeAT;
 	private JButton undoButton = new JButton("Restore");
+	private JTextArea textArea;
 	private  mxIGraphLayout layout;
     private static int selectedCellId = 0;
     private static mxCell selectedCell = null;
@@ -84,7 +89,7 @@ public class Actions extends JFrame {
 			String activation = String.valueOf(argument.getActivity());
 			String nodeInfo = summary+"\r\n"+activation;
 			String argId = String.valueOf(argument.getArgId());
-			AddNode.addNode(nodeInfo,i,i,argId);
+			AddNode.addNode(nodeInfo,i,i,argId,argument.getSummary());
 		}
 		
 		
@@ -143,7 +148,7 @@ public class Actions extends JFrame {
         
         
         evaluation = new JButton("Evaluate");
-        evaluation.setBounds(1373, 370, 168, 50);
+        evaluation.setBounds(1369, 307, 168, 50);
         evaluation.setFont(new Font("Arial", Font.PLAIN, 20));
         evaluation.setPreferredSize(new Dimension(168, 50));
         evaluation.addActionListener(new ActionListener() {
@@ -185,7 +190,6 @@ public class Actions extends JFrame {
 				for (int i = 0; i < solution.size(); i++) {
 					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(i).getArgId()+1));
 					newSummary = solution.get(i).getSummary()+"\r\n"+round(solution.get(i).getActivity(),2);
-					System.out.println("set new AT: +++++++++" + solution.get(i).getActivity() );
 					graph.getModel().setValue(result, newSummary);
 					Hashtable<String, Object> styleNodeNew = getNodeColor(argArrayCopy.get(i).getActivity(), solution.get(i).getActivity());
 					mxStylesheet stylesheetNodeNew = graph.getStylesheet();
@@ -221,7 +225,7 @@ public class Actions extends JFrame {
         
         undoButton.setFont(new Font("Arial", Font.PLAIN, 20));
         undoButton.setPreferredSize(new Dimension(168, 50));
-        undoButton.setBounds(1373, 496, 168, 50);
+        undoButton.setBounds(1369, 433, 168, 50);
         undoButton.setEnabled(false);
         undoButton.addActionListener(new ActionListener() {
 			
@@ -244,7 +248,7 @@ public class Actions extends JFrame {
         
         
         restart = new JButton("Restart");
-        restart.setBounds(1373, 559, 168, 50);
+        restart.setBounds(1369, 496, 168, 50);
         restart.setFont(new Font("Arial", Font.PLAIN, 20));
         restart.setPreferredSize(new Dimension(168, 50));
         restart.addActionListener(new ActionListener() {
@@ -267,20 +271,19 @@ public class Actions extends JFrame {
         
       
         changeAT = new JButton("New value");
-        changeAT.setBounds(1373, 433, 168, 50);
+        changeAT.setBounds(1369, 370, 168, 50);
         changeAT.setFont(new Font("Arial", Font.PLAIN, 20));
         changeAT.setPreferredSize(new Dimension(168, 50));
         changeAT.setEnabled(false);
-
-        //ArrayList<Argument> argArrayForNewAT = copyArgArrayList(argArray);
-        //ArrayList<Relation> relArrayForNewWT = copyRelArrayList(relArray);
         graph.getSelectionModel().addListener(mxEvent.CHANGE, new mxIEventListener() {
 			
 			@Override
 			public void invoke(Object arg0, mxEventObject arg1) {
-				selectedCellId = Integer.parseInt(((mxCell)graph.getSelectionCell()).getId())-1;
-				selectedCell = (mxCell)graph.getSelectionCell();
-				//changeAT.setEnabled(true);
+				if (graph.getSelectionCell() != null) {
+					selectedCellId = Integer.parseInt(((mxCell)graph.getSelectionCell()).getId())-1;
+					selectedCell = (mxCell)graph.getSelectionCell();
+				}
+				
 			}
 		});
         changeAT.addActionListener(new ActionListener() {
@@ -316,13 +319,36 @@ public class Actions extends JFrame {
         graphComponent.getGraphControl().addMouseListener(new MouseListener() {
 			
 			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
+			public void mouseReleased(MouseEvent e) {				
 			}
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
+				mxCell tooltipcell = (mxCell) graphComponent.getCellAt(e.getX(), e.getY());
+				if (tooltipcell != null) {
+					int tooltipCellId = Integer.parseInt(tooltipcell.getId())-1;
+					Argument tooltipArg = Framework.getArg(tooltipCellId, argArray);
+					if (tooltipArg != null) {
+						String text = tooltipArg.getText();
+						textArea.setText(text);
+					}
+					
+				}else{
+					textArea.setText("");
+				}
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
 				mxCell cell = (mxCell) graphComponent.getCellAt(e.getX(), e.getY());
 				if (cell == null) {
 					changeAT.setEnabled(false);
@@ -330,31 +356,20 @@ public class Actions extends JFrame {
 					changeAT.setEnabled(true);
 				}
 			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-				
-			}
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
 		});       
          
         getContentPane().add(evaluation);
         getContentPane().add(changeAT);
         getContentPane().add(restart);
         getContentPane().add(undoButton);
+                
+        textArea = new JTextArea();
+        textArea.setBounds(1338, 594, 230, 160);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setFont(new Font("Arial", Font.PLAIN, 20));
+        
+        getContentPane().add(textArea);
 	}
 
 	
@@ -441,7 +456,5 @@ public class Actions extends JFrame {
 		}
 		
 	}
-	
-	
 }
 

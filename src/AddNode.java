@@ -16,7 +16,7 @@ public class AddNode extends Actions{
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void addNode(String nodeInfo,int x ,int y,String argId){
+	public static void addNode(String nodeInfo,int x ,int y,String argId,String text){
 		mxStylesheet stylesheet = graph.getStylesheet();
 		Hashtable<String, Object> style = new Hashtable<String,Object>();
 		style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
