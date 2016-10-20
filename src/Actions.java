@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -28,7 +29,9 @@ import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.LayoutFocusTraversalPolicy;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 
 public class Actions extends JFrame {
 	/**
@@ -48,6 +51,9 @@ public class Actions extends JFrame {
     private static mxCell selectedCell = null;
     private static ArrayList<Argument> argArrayCopy;
 	private static ArrayList<Relation> relArrayCopy;
+	private JRadioButton POE;
+	private JRadioButton BRD;
+	private JRadioButton SOE;
 	
 	
 
@@ -71,11 +77,13 @@ public class Actions extends JFrame {
 	
 
 	public void initGUI(ArrayList<Argument> argArray,ArrayList<Relation> relArray,Framework framework) {
-		setSize(1600, 1000);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setUndecorated(true);
+		setVisible(true);
 		setLocationRelativeTo(null);
 		graphComponent = new mxGraphComponent(graph);
-		graphComponent.setBounds(5, 5, 1319, 1000);
-		layout = new mxCircleLayout(graph);
+		graphComponent.setBounds(5, 5, 1200, 1080);
+		layout = new mxCircleLayout(graph,70);
 		getContentPane().setLayout(null);
 		graphComponent.setPreferredSize(new Dimension(1200, 1000));
 		getContentPane().add(graphComponent);
@@ -149,12 +157,22 @@ public class Actions extends JFrame {
         
         
         evaluation = new JButton("Evaluate");
-        evaluation.setBounds(1369, 307, 168, 50);
+        evaluation.setBounds(1369, 505, 168, 50);
         evaluation.setFont(new Font("Arial", Font.PLAIN, 20));
         evaluation.setPreferredSize(new Dimension(168, 50));
         evaluation.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				String mode = "POE";
+				
+				if (POE.isSelected()) {
+					mode = "POE";
+				}else if (SOE.isSelected()) {
+					mode = "SOE";
+				}else if (BRD.isSelected()) {
+					mode = "BRD";
+				}
 				
 				ArrayList<Argument> argArrayCopyNew = copyArgArrayList(argArrayCopy);
 				ArrayList<Relation> relArrayCopyNew =  copyRelArrayList(relArrayCopy);
@@ -184,12 +202,19 @@ public class Actions extends JFrame {
 				stylesheet.putCellStyle("winnerStyle", style);
 				
 				
+				for(int i = 0; i<argArrayCopy.size();i++){
+					System.out.println("argId: "+argArrayCopy.get(i).getArgId()+ " original activation: "+argArrayCopy.get(i).getActivity());
+				}
+				System.out.println("mode is :-------------"+mode);
+				ArrayList<Argument> solution = Framework.evaluate(mode, "none", argArrayCopyNew, relArrayForEvl,soList);
+				for(int i = 0; i<solution.size();i++){
+					System.out.println("argId: "+solution.get(i).getArgId()+ " new activation: "+solution.get(i).getActivity());
+				}
 				
-				ArrayList<Argument> solution = Framework.evaluate("POE", "none", argArrayCopyNew, relArrayForEvl,soList);
 				
 				for (int i = 0; i < solution.size(); i++) {
 					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(i).getArgId()+1));
-					newSummary = solution.get(i).getSummary()+"\r\n"+round(solution.get(i).getActivity(),2);
+					newSummary = solution.get(i).getSummary()+"\r\n"+round(argArrayCopy.get(i).getActivity(), 2)+">>"+round(solution.get(i).getActivity(),2);
 					graph.getModel().setValue(result, newSummary);
 					Hashtable<String, Object> styleNodeNew = getNodeColor(argArrayCopy.get(i).getActivity(), solution.get(i).getActivity());
 					mxStylesheet stylesheetNodeNew = graph.getStylesheet();
@@ -208,6 +233,10 @@ public class Actions extends JFrame {
 				}
 				for(int i = 0;i<conclusion.size();i++){
 					graph.getModel().setStyle(conclusion.get(i), "winnerStyle");
+				}
+				
+				if(conclusion.size() == 1){
+					textArea.setText("Winner is:\n"+Framework.getArg(Integer.parseInt(conclusion.get(0).getId())-1,argArrayCopy).getText());
 				}
 				
 				for(int i = 0;i<relArrayCopy.size();i++){
@@ -230,7 +259,7 @@ public class Actions extends JFrame {
         
         undoButton.setFont(new Font("Arial", Font.PLAIN, 20));
         undoButton.setPreferredSize(new Dimension(168, 50));
-        undoButton.setBounds(1369, 433, 168, 50);
+        undoButton.setBounds(1369, 631, 168, 50);
         undoButton.setEnabled(false);
         undoButton.addActionListener(new ActionListener() {
 			
@@ -253,7 +282,7 @@ public class Actions extends JFrame {
         
         
         restart = new JButton("Restart");
-        restart.setBounds(1369, 496, 168, 50);
+        restart.setBounds(1369, 694, 168, 50);
         restart.setFont(new Font("Arial", Font.PLAIN, 20));
         restart.setPreferredSize(new Dimension(168, 50));
         restart.addActionListener(new ActionListener() {
@@ -276,7 +305,7 @@ public class Actions extends JFrame {
         
       
         changeAT = new JButton("New value");
-        changeAT.setBounds(1369, 370, 168, 50);
+        changeAT.setBounds(1369, 568, 168, 50);
         changeAT.setFont(new Font("Arial", Font.PLAIN, 20));
         changeAT.setPreferredSize(new Dimension(168, 50));
         changeAT.setEnabled(false);
@@ -319,7 +348,7 @@ public class Actions extends JFrame {
 			}
 		});
         
-              
+         
         
         graphComponent.getGraphControl().addMouseListener(new MouseListener() {
 			
@@ -334,8 +363,18 @@ public class Actions extends JFrame {
 					int tooltipCellId = Integer.parseInt(tooltipcell.getId())-1;
 					Argument tooltipArg = Framework.getArg(tooltipCellId, argArray);
 					if (tooltipArg != null) {
+						if (tooltipCellId == 1 || tooltipCellId == 2) {
+							String text = "Position: "+tooltipCellId+"\r\n"+tooltipArg.getText();
+							textArea.setText(text);
+						}else{
 						String text = "Argument ID: "+tooltipCellId+"\r\n"+tooltipArg.getText();
 						textArea.setText(text);
+						}
+						//ArrayList<Argument> updatedPos = framework.argContribution(tooltipCellId, "POE", "none");
+						//for(int i = 0;i<updatedPos.size();i++){
+							//System.out.println("argId: "+updatedPos.get(i).getArgId()+" new activation: "+updatedPos.get(i).getActivity());
+						//}
+						
 					}else{
 						tooltipCellId = Integer.parseInt(tooltipcell.getId())-1000;
 						String text = "Relation ID: "+tooltipCellId;
@@ -373,7 +412,7 @@ public class Actions extends JFrame {
         getContentPane().add(undoButton);
                 
         textArea = new JTextArea();
-        textArea.setBounds(1338, 594, 230, 160);
+        textArea.setBounds(1338, 780, 230, 160);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -382,7 +421,7 @@ public class Actions extends JFrame {
         getContentPane().add(textArea);
         
         JTextArea lblNewLabel = new JTextArea("New label");
-        lblNewLabel.setBounds(1338, 96, 230, 134);
+        lblNewLabel.setBounds(1338, 100, 600, 134);
         lblNewLabel.setText(framework.getTopicDescription());
         lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         lblNewLabel.setLineWrap(true);
@@ -391,6 +430,34 @@ public class Actions extends JFrame {
         lblNewLabel.setEditable(false);
         
         getContentPane().add(lblNewLabel);
+        
+        JTextArea textContri = new JTextArea();
+        textContri.setBounds(1338, 159, 230, 148);
+        textContri.setEditable(false);
+        
+        getContentPane().add(textContri);
+        
+        POE = new JRadioButton("POE");
+        POE.setSelected(true);
+        POE.setBounds(1369, 343, 157, 40);
+        POE.setFont(new Font("Arial", Font.PLAIN, 20));
+        getContentPane().add(POE);
+        
+        BRD = new JRadioButton("BRD");
+        BRD.setBounds(1369, 388, 157, 40);
+        BRD.setFont(new Font("Arial", Font.PLAIN, 20));
+        getContentPane().add(BRD);
+        
+        SOE = new JRadioButton("SOE");
+        SOE.setBounds(1369, 433, 157, 40);
+        SOE.setFont(new Font("Arial", Font.PLAIN, 20));
+        getContentPane().add(SOE);
+        
+        
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(BRD);
+        buttonGroup.add(SOE);
+        buttonGroup.add(POE);
 	}
 
 	

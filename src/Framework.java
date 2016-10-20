@@ -6,7 +6,10 @@
 
  	//IMPORT MATHS
 import java.util.*;
+
+import javax.swing.Action;
 public class Framework {
+	private static final Framework Framework = null;
 	private  String topicDescription;		// what the argumentation is about
 	private  String topicSummary;			// short summary of description
 	private ArrayList<Argument> positions;	// competing (final) positions in the argumentation, e.g. 'is guilty'
