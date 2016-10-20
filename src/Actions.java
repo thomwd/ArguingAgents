@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,7 +18,6 @@ import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.swing.handler.mxCellHandler;
 import com.mxgraph.swing.util.mxMorphing;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxEvent;
@@ -28,9 +26,6 @@ import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.LayoutFocusTraversalPolicy;
-import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 
 public class Actions extends JFrame {
@@ -221,7 +216,7 @@ public class Actions extends JFrame {
 					stylesheetNodeNew.putCellStyle("updatedNodeStyle", styleNodeNew);
 					graph.getModel().setStyle(result, "updatedNodeStyle");
 				}
-				//mxCell conclusion = null;
+
 				ArrayList<mxCell> conclusion = new ArrayList<mxCell>();
 				if (solution.get(0).getActivity()>solution.get(1).getActivity()){
 					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(0).getArgId()+1)));

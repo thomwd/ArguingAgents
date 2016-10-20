@@ -95,5 +95,22 @@
 				</targetArgs>
 			</relations>
 		</argument>
+		<argument argId="7">
+			<agentId>1</agentId>
+			<text>Mac is too expensive</text>
+			<summary>Expensive</summary>
+			<activation>0.7</activation>
+			<relations>
+				<targetArgs>
+					<targetArgId weight="-0.9" relId = "7">
+						1
+					</targetArgId>
+				</targetArgs>
+			</relations>
+		</argument>
+
+		
+		
+		
 	</arguments>
 </argumentation>
