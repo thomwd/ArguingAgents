@@ -114,7 +114,7 @@ public class Import extends JFrame {
 				String subject = ProcessXML.getSubject(document);
 				String subjectSummary = ProcessXML.getSummarySubject(document);
 				Framework framework = new Framework(subject, subjectSummary, argArrayCopy, relArrayCopy);
-				Actions actions = new Actions(argArrayCopy,relArrayCopy);
+				Actions actions = new Actions(argArrayCopy,relArrayCopy,framework);
 				Import.this.dispose();
 				actions.setVisible(true);
 			}

@@ -28,6 +28,7 @@ import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JLabel;
 
 public class Actions extends JFrame {
 	/**
@@ -60,16 +61,16 @@ public class Actions extends JFrame {
 	
 	
 
-	public Actions(ArrayList<Argument> argArray,ArrayList<Relation> relArray){
+	public Actions(ArrayList<Argument> argArray,ArrayList<Relation> relArray,Framework framework){
 		super("Argumentation Framework");
-		initGUI(argArray, relArray);
+		initGUI(argArray, relArray,framework);
 	}
 	
 
 	
 	
 
-	public void initGUI(ArrayList<Argument> argArray,ArrayList<Relation> relArray) {
+	public void initGUI(ArrayList<Argument> argArray,ArrayList<Relation> relArray,Framework framework) {
 		setSize(1600, 1000);
 		setLocationRelativeTo(null);
 		graphComponent = new mxGraphComponent(graph);
@@ -237,7 +238,7 @@ public class Actions extends JFrame {
 		        graph.setAllowDanglingEdges(true);
 		        graph.setSplitEnabled(true);
 		        graphComponent.setConnectable(true);
-				Actions newAction = new Actions(argArray,relArray);
+				Actions newAction = new Actions(argArray,relArray,framework);
 				Actions.this.dispose();
 				newAction.setVisible(true);
 				evaluation.setEnabled(true);
@@ -329,7 +330,11 @@ public class Actions extends JFrame {
 					int tooltipCellId = Integer.parseInt(tooltipcell.getId())-1;
 					Argument tooltipArg = Framework.getArg(tooltipCellId, argArray);
 					if (tooltipArg != null) {
-						String text = tooltipArg.getText();
+						String text = "Arugment ID: "+tooltipCellId+"\r\n"+tooltipArg.getText();
+						textArea.setText(text);
+					}else{
+						tooltipCellId = Integer.parseInt(tooltipcell.getId())-1000;
+						String text = "Relation ID: "+tooltipCellId;
 						textArea.setText(text);
 					}
 					
@@ -370,6 +375,15 @@ public class Actions extends JFrame {
         textArea.setFont(new Font("Arial", Font.PLAIN, 20));
         
         getContentPane().add(textArea);
+        
+        JTextArea lblNewLabel = new JTextArea("New label");
+        lblNewLabel.setBounds(1338, 96, 230, 134);
+        lblNewLabel.setText(framework.getTopicDescription());
+        lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        lblNewLabel.setLineWrap(true);
+        lblNewLabel.setWrapStyleWord(true);
+        lblNewLabel.setBackground(getBackground());
+        getContentPane().add(lblNewLabel);
 	}
 
 	

@@ -12,7 +12,7 @@ public class AddNode extends Actions{
 	private static final long serialVersionUID = 1L;
 
 	public AddNode(ArrayList<Argument> argArray, ArrayList<Relation> relArray,Framework framework) {
-		super(argArray, relArray);
+		super(argArray, relArray,framework);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -77,7 +77,7 @@ public class AddAttackLine extends Actions {
 	}
 
 	public AddAttackLine(ArrayList<Argument> argArray, ArrayList<Relation> relArray,Framework framework) {
-		super(argArray, relArray);        
+		super(argArray, relArray,framework);        
 	}
 
 }

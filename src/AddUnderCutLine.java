@@ -98,7 +98,7 @@ public class AddUnderCutLine extends Actions {
 	}
 
 	public AddUnderCutLine(ArrayList<Argument> argArray, ArrayList<Relation> relArray,Framework framework) {
-		super(argArray, relArray);        
+		super(argArray, relArray,framework);        
 	}
 
 	public static Object getMiddleVertex(mxCell front,mxCell end) {	
@@ -108,7 +108,7 @@ public class AddUnderCutLine extends Actions {
         double yTargetCell = end.getGeometry().getCenterY();
         double xMiddleCell = Math.min(xOriginCell,xTargetCell)+Math.abs(xOriginCell-xTargetCell)/2;
         double yMiddleCell = Math.min(yOriginCell,yTargetCell)+Math.abs(yOriginCell-yTargetCell)/2;
-        Object middleCell = getGraph().insertVertex(getGraph().getDefaultParent(), "1000", "", xMiddleCell, yMiddleCell, 0, 0,"nodeStyle");
+        Object middleCell = getGraph().insertVertex(getGraph().getDefaultParent(), "100000", "", xMiddleCell, yMiddleCell, 0, 0,"nodeStyle");
 		return middleCell;
 	}
 	
