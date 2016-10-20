@@ -185,9 +185,10 @@ public class Actions extends JFrame {
 				
 				
 				
-				ArrayList<Argument> solution = Framework.evaluate("POE", 0, argArrayCopyNew, relArrayForEvl,soList);			   
+				ArrayList<Argument> solution = Framework.evaluate("POE", "none", argArrayCopyNew, relArrayForEvl,soList);			   
 				
-								
+				
+				
 				for (int i = 0; i < solution.size(); i++) {
 					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(i).getArgId()+1));
 					newSummary = solution.get(i).getSummary()+"\r\n"+round(solution.get(i).getActivity(),2);
@@ -197,14 +198,19 @@ public class Actions extends JFrame {
 					stylesheetNodeNew.putCellStyle("updatedNodeStyle", styleNodeNew);
 					graph.getModel().setStyle(result, "updatedNodeStyle");
 				}
-				mxCell conclusion = null;
+				//mxCell conclusion = null;
+				ArrayList<mxCell> conclusion = new ArrayList<mxCell>();
 				if (solution.get(0).getActivity()>solution.get(1).getActivity()){
-					conclusion= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(0).getArgId()+1));
-				}else if (solution.get(0).getActivity()>solution.get(1).getActivity()) {
-					conclusion= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(1).getArgId()+1));
+					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(0).getArgId()+1)));
+				}else if (solution.get(0).getActivity()<solution.get(1).getActivity()) {
+					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(1).getArgId()+1)));
+				}else {
+					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(0).getArgId()+1)));
+					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(1).getArgId()+1)));
 				}
-				graph.getModel().setStyle(conclusion, "winnerStyle");
-				
+				for(int i = 0;i<conclusion.size();i++){
+					graph.getModel().setStyle(conclusion.get(i), "winnerStyle");
+				}
 				
 				for(int i = 0;i<relArrayCopy.size();i++){
 					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(relArrayCopyNew.get(i).getRelId()+1000));
@@ -330,7 +336,7 @@ public class Actions extends JFrame {
 					int tooltipCellId = Integer.parseInt(tooltipcell.getId())-1;
 					Argument tooltipArg = Framework.getArg(tooltipCellId, argArray);
 					if (tooltipArg != null) {
-						String text = "Arugment ID: "+tooltipCellId+"\r\n"+tooltipArg.getText();
+						String text = "Argument ID: "+tooltipCellId+"\r\n"+tooltipArg.getText();
 						textArea.setText(text);
 					}else{
 						tooltipCellId = Integer.parseInt(tooltipcell.getId())-1000;
@@ -373,6 +379,7 @@ public class Actions extends JFrame {
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setFont(new Font("Arial", Font.PLAIN, 20));
+        textArea.setEditable(false);
         
         getContentPane().add(textArea);
         
@@ -383,6 +390,8 @@ public class Actions extends JFrame {
         lblNewLabel.setLineWrap(true);
         lblNewLabel.setWrapStyleWord(true);
         lblNewLabel.setBackground(getBackground());
+        lblNewLabel.setEditable(false);
+        
         getContentPane().add(lblNewLabel);
 	}
 
