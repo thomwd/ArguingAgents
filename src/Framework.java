@@ -96,7 +96,18 @@ public class Framework {
 		return weight;
 	}
 
-	
+	public static double applyThreshold(double activity, String threshold){
+		if(threshold == "sigmoid"){
+			return 1/(1+Math.exp(-activity));
+		}else if (threshold == "binary"){
+			System.out.println("we are in binary mode");
+			if(activity>0.5){
+				return 1;
+			}
+			return 0;
+		}
+		return activity;
+	}
 	
 	
 	/**
@@ -106,16 +117,20 @@ public class Framework {
 	 * @return ArrayList<Argument> a copy of the field 'arguments' for which all activations have been computed.
 	 */
 	//TODO: if threshold is changed to a function (lambda expression), this also needs to be changed in the argContribution method.
-	public static ArrayList<Argument> evaluate(String mode, double threshold, ArrayList<Argument> arguments,
+	public static ArrayList<Argument> evaluate(String mode, String threshold, ArrayList<Argument> arguments,
 										ArrayList<Relation> relations, ArrayList<Argument> solution){
 		boolean solved = true;                              // if false, function will call itself recursively.
 		ArrayList<Integer> removeArgs = new ArrayList<Integer>();
 		for(int i = 0; i < arguments.size(); i++){ 			// Iterate over all arguments
 			Argument argument = arguments.get(i);
-			                                                // enforce 0 <= activation <= 1
-			if(argument.getActivity()<0){argument.setActivity(0);}
-			if(argument.getActivity()>1){argument.setActivity(1);}
 			if(isLeaf(argument,relations)){ 			    // Check if the argument is an argument from the current layer
+                // enforce 0 <= activation <= 1
+				if(argument.getActivity()<0){argument.setActivity(0);}
+				if(argument.getActivity()>1){argument.setActivity(1);}
+				System.out.println("thresholding argument "+argument.getArgId());
+				argument.setActivity(applyThreshold(argument.getActivity(),threshold));	
+				getArg(argument.getArgId(), solution).setActivity(argument.getActivity());
+				System.out.println("activity is now  "+argument.getActivity());				
 				//TODO: work with a threshold
 				removeArgs.add(argument.getArgId());        // Add this argument to the list of arguments that need to be removed
 				ArrayList<Integer> removeRels = new ArrayList<Integer>();
@@ -189,7 +204,7 @@ public class Framework {
      * @return updatedPos: The updated copies of the positions. We can then compare their activation to
      *                     our the activation of our real positions.
      */
-    public ArrayList<Argument> argContribution(int argId, String mode, double threshold) {
+    public ArrayList<Argument> argContribution(int argId, String mode, String threshold) {
         ArrayList<Argument> copyArgs = Actions.copyArgArrayList(arguments);
         ArrayList<Relation> copyRels = Actions.copyRelArrayList(relations);
         Argument original = getArg(argId, arguments);

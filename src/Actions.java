@@ -185,9 +185,7 @@ public class Actions extends JFrame {
 				
 				
 				
-				ArrayList<Argument> solution = Framework.evaluate("POE", "none", argArrayCopyNew, relArrayForEvl,soList);			   
-				
-				
+				ArrayList<Argument> solution = Framework.evaluate("POE", "none", argArrayCopyNew, relArrayForEvl,soList);
 				
 				for (int i = 0; i < solution.size(); i++) {
 					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(i).getArgId()+1));
