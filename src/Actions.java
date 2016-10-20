@@ -185,7 +185,7 @@ public class Actions extends JFrame {
 				
 				
 				
-				ArrayList<Argument> solution = Framework.evaluate("POE", 0, argArrayCopyNew, relArrayForEvl,soList);			   
+				ArrayList<Argument> solution = Framework.evaluate("POE", "none", argArrayCopyNew, relArrayForEvl,soList);			   
 				
 								
 				for (int i = 0; i < solution.size(); i++) {
