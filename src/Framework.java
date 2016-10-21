@@ -132,7 +132,9 @@ public class Framework {
 				if(argument.getActivity()>1){argument.setActivity(1);}
 				System.out.println("thresholding argument "+argument.getArgId());
 				argument.setActivity(applyThreshold(argument.getActivity(),threshold));	
-				getArg(argument.getArgId(), solution).setActivity(argument.getActivity());
+				if (argument.getArgId()>100) {
+					getArg((argument.getArgId())/100, solution).setActivity(argument.getActivity());
+				}else	getArg(argument.getArgId(), solution).setActivity(argument.getActivity());
 				System.out.println("activity is now  "+argument.getActivity());				
 				//TODO: work with a threshold
 				removeArgs.add(argument.getArgId());        // Add this argument to the list of arguments that need to be removed
@@ -207,12 +209,13 @@ public class Framework {
      * @return updatedPos: The updated copies of the positions. We can then compare their activation to
      *                     our the activation of our real positions.
      */
-    public ArrayList<Argument> argContribution(int argId, String mode, String threshold) {
+    public ArrayList<Argument> argContribution(int argId, String mode, String threshold, ArrayList<Argument> arguments,ArrayList<Relation>relations) {
         ArrayList<Argument> copyArgs = Actions.copyArgArrayList(arguments);
         ArrayList<Relation> copyRels = Actions.copyRelArrayList(relations);
         Argument original = getArg(argId, arguments);
-        int newId = 99999;                          // needs to be unique TODO: which id should be specified
         int oldId = original.getArgId();            // dummy has and keeps 0 activation
+       // int newId = 99999;                          // needs to be unique TODO: which id should be specified
+        int newId = oldId*100;                          // needs to be unique TODO: which id should be specified
         Argument dummy = new Argument(newId, original.getAgentId(), "dummy", "dummy", 0);
         copyArgs.add(dummy);
         for(int j = 0; j < copyRels.size(); j++) {  // Transfer all outgoing relations
@@ -223,7 +226,8 @@ public class Framework {
         }
         // Recompute activation after effectively removing all outgoing relations
         ArrayList<Argument> updatedArgs = new ArrayList<>();
-        updatedArgs = evaluate(mode, threshold, copyArgs, copyRels, updatedArgs);
+        ArrayList<Argument> solistForContri = Actions.copyArgArrayList(arguments);
+        updatedArgs = evaluate(mode, threshold, copyArgs, copyRels, solistForContri);
         ArrayList<Argument> updatedPos = new ArrayList<>();
         for (int j = 0; j < positions.size(); j++) {    // return updated Positions
             int posId = positions.get(j).getArgId();    // get old position id

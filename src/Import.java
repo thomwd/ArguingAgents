@@ -57,7 +57,7 @@ public class Import extends JFrame {
 	 */
 	public Import() {
 		chooser = new JFileChooser();
-		setTitle("Group10-AA");
+		setTitle("TEA");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 671, 453);
 		contentPane = new JPanel();

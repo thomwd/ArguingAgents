@@ -27,6 +27,7 @@ import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
 import javax.swing.JTextArea;
 import javax.swing.JRadioButton;
+import javax.swing.JLabel;
 
 public class Actions extends JFrame {
 	/**
@@ -41,6 +42,7 @@ public class Actions extends JFrame {
 	private JButton changeAT;
 	private JButton undoButton = new JButton("Restore");
 	private JTextArea textArea;
+	private JTextArea textContri;
 	private  mxIGraphLayout layout;
     private static int selectedCellId = 0;
     private static mxCell selectedCell = null;
@@ -49,6 +51,7 @@ public class Actions extends JFrame {
 	private JRadioButton POE;
 	private JRadioButton BRD;
 	private JRadioButton SOE;
+	private static String mode = "POE";
 	
 	
 
@@ -63,7 +66,8 @@ public class Actions extends JFrame {
 	
 
 	public Actions(ArrayList<Argument> argArray,ArrayList<Relation> relArray,Framework framework){
-		super("Argumentation Framework");
+		//super("Argumentation Framework");
+		super("TEA");
 		initGUI(argArray, relArray,framework);
 	}
 	
@@ -75,6 +79,7 @@ public class Actions extends JFrame {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setUndecorated(true);
 		setVisible(true);
+		//setSize(1980, 1200);
 		setLocationRelativeTo(null);
 		graphComponent = new mxGraphComponent(graph);
 		graphComponent.setBounds(5, 5, 1200, 1080);
@@ -152,14 +157,14 @@ public class Actions extends JFrame {
         
         
         evaluation = new JButton("Evaluate");
-        evaluation.setBounds(1369, 505, 168, 50);
+        evaluation.setBounds(1307, 292, 288, 50);
         evaluation.setFont(new Font("Arial", Font.PLAIN, 20));
         evaluation.setPreferredSize(new Dimension(168, 50));
         evaluation.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				String mode = "POE";
+				
 				
 				if (POE.isSelected()) {
 					mode = "POE";
@@ -196,15 +201,9 @@ public class Actions extends JFrame {
 				style.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
 				stylesheet.putCellStyle("winnerStyle", style);
 				
-				
-				for(int i = 0; i<argArrayCopy.size();i++){
-					System.out.println("argId: "+argArrayCopy.get(i).getArgId()+ " original activation: "+argArrayCopy.get(i).getActivity());
-				}
-				System.out.println("mode is :-------------"+mode);
+								
 				ArrayList<Argument> solution = Framework.evaluate(mode, "none", argArrayCopyNew, relArrayForEvl,soList);
-				for(int i = 0; i<solution.size();i++){
-					System.out.println("argId: "+solution.get(i).getArgId()+ " new activation: "+solution.get(i).getActivity());
-				}
+				
 				
 				
 				for (int i = 0; i < solution.size(); i++) {
@@ -254,7 +253,7 @@ public class Actions extends JFrame {
         
         undoButton.setFont(new Font("Arial", Font.PLAIN, 20));
         undoButton.setPreferredSize(new Dimension(168, 50));
-        undoButton.setBounds(1369, 631, 168, 50);
+        undoButton.setBounds(1307, 418, 288, 50);
         undoButton.setEnabled(false);
         undoButton.addActionListener(new ActionListener() {
 			
@@ -277,7 +276,7 @@ public class Actions extends JFrame {
         
         
         restart = new JButton("Restart");
-        restart.setBounds(1369, 694, 168, 50);
+        restart.setBounds(1307, 481, 288, 50);
         restart.setFont(new Font("Arial", Font.PLAIN, 20));
         restart.setPreferredSize(new Dimension(168, 50));
         restart.addActionListener(new ActionListener() {
@@ -300,7 +299,7 @@ public class Actions extends JFrame {
         
       
         changeAT = new JButton("New value");
-        changeAT.setBounds(1369, 568, 168, 50);
+        changeAT.setBounds(1307, 355, 288, 50);
         changeAT.setFont(new Font("Arial", Font.PLAIN, 20));
         changeAT.setPreferredSize(new Dimension(168, 50));
         changeAT.setEnabled(false);
@@ -365,19 +364,19 @@ public class Actions extends JFrame {
 						String text = "Argument ID: "+tooltipCellId+"\r\n"+tooltipArg.getText();
 						textArea.setText(text);
 						}
-						//ArrayList<Argument> updatedPos = framework.argContribution(tooltipCellId, "POE", "none");
-						//for(int i = 0;i<updatedPos.size();i++){
-							//System.out.println("argId: "+updatedPos.get(i).getArgId()+" new activation: "+updatedPos.get(i).getActivity());
-						//}
+						ArrayList<Argument> updatedPos = framework.argContribution(tooltipCellId, mode, "none",argArrayCopy,relArrayCopy);
+						textContri.setText("Without ArgID: "+tooltipCellId+"\nAct pos1: " + round(updatedPos.get(0).getActivity(),2)+"\nAct pos2: "+round(updatedPos.get(1).getActivity(),2));
 						
 					}else{
 						tooltipCellId = Integer.parseInt(tooltipcell.getId())-1000;
 						String text = "Relation ID: "+tooltipCellId;
 						textArea.setText(text);
+						textContri.setText("");
 					}
 					
 				}else{
 					textArea.setText("");
+					textContri.setText("");
 				}
 				
 			}
@@ -407,7 +406,7 @@ public class Actions extends JFrame {
         getContentPane().add(undoButton);
                 
         textArea = new JTextArea();
-        textArea.setBounds(1338, 780, 230, 160);
+        textArea.setBounds(1307, 649, 288, 160);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -416,8 +415,8 @@ public class Actions extends JFrame {
         getContentPane().add(textArea);
         
         JTextArea lblNewLabel = new JTextArea("New label");
-        lblNewLabel.setBounds(1338, 100, 600, 134);
-        lblNewLabel.setText(framework.getTopicDescription());
+        lblNewLabel.setBounds(1307, 103, 600, 83);
+        lblNewLabel.setText("Issue: \n\n"+framework.getTopicDescription());
         lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         lblNewLabel.setLineWrap(true);
         lblNewLabel.setWrapStyleWord(true);
@@ -426,25 +425,27 @@ public class Actions extends JFrame {
         
         getContentPane().add(lblNewLabel);
         
-        JTextArea textContri = new JTextArea();
-        textContri.setBounds(1338, 159, 230, 148);
+        
+        textContri = new JTextArea();
+        textContri.setBounds(1305, 893, 288, 83);
+        textContri.setFont(new Font("Arial", Font.PLAIN, 20));
         textContri.setEditable(false);
         
         getContentPane().add(textContri);
         
         POE = new JRadioButton("POE");
         POE.setSelected(true);
-        POE.setBounds(1369, 343, 157, 40);
+        POE.setBounds(1307, 229, 74, 40);
         POE.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(POE);
         
         BRD = new JRadioButton("BRD");
-        BRD.setBounds(1369, 388, 157, 40);
+        BRD.setBounds(1413, 229, 74, 40);
         BRD.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(BRD);
         
         SOE = new JRadioButton("SOE");
-        SOE.setBounds(1369, 433, 157, 40);
+        SOE.setBounds(1521, 229, 74, 40);
         SOE.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(SOE);
         
@@ -453,6 +454,16 @@ public class Actions extends JFrame {
         buttonGroup.add(BRD);
         buttonGroup.add(SOE);
         buttonGroup.add(POE);
+        
+        JLabel lblContribution = new JLabel("Arg Contribution");
+        lblContribution.setBounds(1307, 856, 147, 24);
+        lblContribution.setFont(new Font("Arial", Font.PLAIN, 20));
+        getContentPane().add(lblContribution);
+        
+        JLabel lblArgInfobox = new JLabel("Arg Infobox");
+        lblArgInfobox.setBounds(1307, 604, 135, 32);
+        lblArgInfobox.setFont(new Font("Arial", Font.PLAIN, 20));
+        getContentPane().add(lblArgInfobox);
 	}
 
 	
