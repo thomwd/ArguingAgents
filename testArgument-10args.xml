@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<argumentation>
+	<framework>
+		<subject>Whether the suspect is guilty or innocent?</subject>
+		<summary>Guilty_or_innocent?</summary>
+		<position posId = "1">Guilty</position>
+		<position posId = "2">Innocent</position>
+	</framework>
+	<agents>
+		<agent agentId ="1">
+			<name>Jack</name>
+			<credibility>0.6</credibility>
+		</agent>
+		<agent agentId ="2">
+			<name>Tom</name>
+			<credibility>0.6</credibility>
+		</agent>
+	</agents>
+	<arguments>
+		<argument argId="1">
+			<agentId>1</agentId>
+			<text>The suspect is guilty</text>
+			<summary>Guilty</summary>
+			<activation>0</activation>
+		</argument>
+
+		<argument argId="2">
+			<agentId>2</agentId>
+			<text>The suspect is innocent</text>
+			<summary>Innocent</summary>
+			<activation>0</activation>
+		</argument>
+
+		<argument argId="3">
+			<agentId>1</agentId>
+			<text>The suspect was seen in San Francisco at the day of the murder by witness X.</text>
+			<summary>Seen_in_San_Francisco</summary>
+			<activation>0.6</activation>
+			<relations>
+				<targetArgs>
+					<targetArgId weight="-0.7" relId = "1">
+						1
+					</targetArgId>
+					<targetArgId weight="0.7" relId = "2">
+						2
+					</targetArgId>
+				</targetArgs>
+			</relations>
+		</argument>
+
+
+		<argument argId="4">
+			<agentId>2</agentId>
+			<text>The victim had a debt with the suspect.</text>
+			<summary>Victim_debt_with_suspect</summary>
+			<activation>0.7</activation>
+			<relations>
+				<targetArgs>
+					<targetArgId weight = "-0.3" relId = "5">
+						1
+					</targetArgId>
+					<targetArgId weight = "0.3" relId = "6">
+						2
+					</targetArgId>
+				</targetArgs>
+			</relations>
+		</argument>
+
+		<argument argId="5">
+			<agentId>1</agentId>
+			<text>The suspect has a history of violence.</text>
+			<summary>Suspect_violence_history</summary>
+			<activation>0.9</activation>
+			<relations>
+				<targetArgs>
+					<targetArgId weight = "0.3" relId = "3">
+						1
+					</targetArgId>
+					<targetArgId weight = "-0.3" relId = "4">
+						2
+					</targetArgId>
+				</targetArgs>
+			</relations>
+		</argument>
+
+		<argument argId="6">
+			<agentId>1</agentId>
+			<text>Witness x has lied in court before.</text>
+			<summary>Witness_lied_in_court_before</summary>
+			<activation>0.4</activation>
+			<relations>
+				<targetArgs>
+					<targetArgId weight="-0.6" relId = "9">
+						3
+					</targetArgId>
+				</targetArgs>
+			</relations>
+		</argument>
+		
+		<argument argId="7">
+			<agentId>1</agentId>
+			<text>Credit card of the suspect was used in SF that day</text>
+			<summary>Card_used_that_day</summary>
+			<activation>0.9</activation>
+			<relations>
+				<targetArgs>
+					<targetArgId weight="0.8" relId = "10">
+						3
+					</targetArgId>
+				</targetArgs>
+			</relations>
+		</argument>
+		
+		<argument argId="8">
+			<agentId>1</agentId>
+			<text>A study shows relapse is unlikely for violence delinquencies.</text>
+			<summary>Unlikely_violence_delinquencies</summary>
+			<activation>0.8</activation>
+			<relations>
+				<targetRels>
+					<targetRelId weight="-0.7" relId = "7">
+						3
+					</targetRelId>
+					<targetRelId weight="-0.7" relId = "8">
+						4
+					</targetRelId>
+				</targetRels>
+			</relations>
+		</argument>
+		<argument argId="9">
+			<agentId>1</agentId>
+			<text>Credit card was reported as stolen.</text>
+			<summary>Credit_card_stolen</summary>
+			<activation>1</activation>
+			<relations>
+				<targetRels>
+					<targetRelId weight="-0.8" relId = "11">
+						10
+					</targetRelId>
+				</targetRels>
+			</relations>
+		</argument>
+		<argument argId="10">
+			<agentId>1</agentId>
+			<text>The number of subjects in the study was quite low.</text>
+			<summary>Number_study_low</summary>
+			<activation>0.8</activation>
+			<relations>
+				<targetRels>
+					<targetRelId weight="-0.4" relId = "12">
+						7
+					</targetRelId>
+					<targetRelId weight="-0.4" relId = "13">
+						8
+					</targetRelId>
+				</targetRels>
+			</relations>
+		</argument>
+		
+		
+	</arguments>
+</argumentation>

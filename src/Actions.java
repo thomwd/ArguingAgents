@@ -14,7 +14,11 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import com.mxgraph.layout.mxCircleLayout;
+import com.mxgraph.layout.mxCompactTreeLayout;
+import com.mxgraph.layout.mxEdgeLabelLayout;
 import com.mxgraph.layout.mxIGraphLayout;
+import com.mxgraph.layout.mxParallelEdgeLayout;
+import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.swing.mxGraphComponent;
@@ -24,6 +28,7 @@ import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
+import com.mxgraph.view.mxLayoutManager;
 import com.mxgraph.view.mxStylesheet;
 import javax.swing.JTextArea;
 import javax.swing.JRadioButton;
@@ -43,7 +48,8 @@ public class Actions extends JFrame {
 	private JButton undoButton = new JButton("Restore");
 	private JTextArea textArea;
 	private JTextArea textContri;
-	private  mxIGraphLayout layout;
+	//private  mxIGraphLayout layout;
+	private  mxCircleLayout layout;
     private static int selectedCellId = 0;
     private static mxCell selectedCell = null;
     private static ArrayList<Argument> argArrayCopy;
@@ -52,6 +58,7 @@ public class Actions extends JFrame {
 	private JRadioButton BRD;
 	private JRadioButton SOE;
 	private static String mode = "POE";
+	private static boolean evaluated = false;
 	
 	
 
@@ -82,23 +89,26 @@ public class Actions extends JFrame {
 		//setSize(1980, 1200);
 		setLocationRelativeTo(null);
 		graphComponent = new mxGraphComponent(graph);
-		graphComponent.setBounds(5, 5, 1200, 1080);
-		layout = new mxCircleLayout(graph,70);
+		graphComponent.setBounds(5, 5, 1550, 1070);
+		layout = new mxCircleLayout(graph);
 		getContentPane().setLayout(null);
-		graphComponent.setPreferredSize(new Dimension(1200, 1000));
+		graphComponent.setPreferredSize(new Dimension(1550, 1070));
 		getContentPane().add(graphComponent);
 		graph.setCellsDisconnectable(false);
         graph.setCellsEditable(false);
         graph.setCellsResizable(false);
         graph.setDropEnabled(false);
+        
 		
 		for(int i = 0; i<argArray.size();i++){
+			String nodeInfo= null;
 			Argument argument = argArray.get(i);
 			String summary = argument.getSummary();
 			String activation = String.valueOf(argument.getActivity());
-			String nodeInfo = summary+"\r\n"+activation;
 			String argId = String.valueOf(argument.getArgId());
-			AddNode.addNode(nodeInfo,i,i,argId,argument.getSummary());
+			nodeInfo = "ArgId: "+argId+"\r\n"+activation;
+			//String nodeInfo = summary+"\r\n"+activation;
+			AddNode.addNode(nodeInfo,0,0,argId,argument.getSummary());
 		}
 		
 		
@@ -123,7 +133,11 @@ public class Actions extends JFrame {
          graph.getModel().beginUpdate();
          try
 			{
-				layout.execute(cell);
+        	 
+        	 layout.setRadius(500);
+        	 layout.setX0(225);
+        	 layout.setY0(3);
+			 layout.execute(cell);
 			}
          finally
 			{
@@ -157,7 +171,7 @@ public class Actions extends JFrame {
         
         
         evaluation = new JButton("Evaluate");
-        evaluation.setBounds(1307, 292, 288, 50);
+        evaluation.setBounds(1575, 296, 288, 50);
         evaluation.setFont(new Font("Arial", Font.PLAIN, 20));
         evaluation.setPreferredSize(new Dimension(168, 50));
         evaluation.addActionListener(new ActionListener() {
@@ -208,7 +222,9 @@ public class Actions extends JFrame {
 				
 				for (int i = 0; i < solution.size(); i++) {
 					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(i).getArgId()+1));
-					newSummary = solution.get(i).getSummary()+"\r\n"+round(argArrayCopy.get(i).getActivity(), 2)+">>"+round(solution.get(i).getActivity(),2);
+					//newSummary = solution.get(i).getSummary()+"\r\n"+round(argArrayCopy.get(i).getActivity(), 2)+">>"+round(solution.get(i).getActivity(),2);
+					newSummary = "ArgId: "+solution.get(i).getArgId()+"\r\n"+round(argArrayCopy.get(i).getActivity(), 2)+">>"+round(solution.get(i).getActivity(),2);
+
 					graph.getModel().setValue(result, newSummary);
 					Hashtable<String, Object> styleNodeNew = getNodeColor(argArrayCopy.get(i).getActivity(), solution.get(i).getActivity());
 					mxStylesheet stylesheetNodeNew = graph.getStylesheet();
@@ -243,6 +259,7 @@ public class Actions extends JFrame {
 					graph.getModel().setStyle(result, "updateEdgeStyle");
 				}
 				
+				evaluated = true;
 			    evaluation.setEnabled(false);	
 			    undoButton.setEnabled(true);
 			    changeAT.setEnabled(false);
@@ -253,7 +270,7 @@ public class Actions extends JFrame {
         
         undoButton.setFont(new Font("Arial", Font.PLAIN, 20));
         undoButton.setPreferredSize(new Dimension(168, 50));
-        undoButton.setBounds(1307, 418, 288, 50);
+        undoButton.setBounds(1575, 422, 288, 50);
         undoButton.setEnabled(false);
         undoButton.addActionListener(new ActionListener() {
 			
@@ -270,13 +287,14 @@ public class Actions extends JFrame {
 				newAction.setVisible(true);
 				evaluation.setEnabled(true);
 				undoButton.setEnabled(false);
+				evaluated = false;
 			}
 		});
         
         
         
         restart = new JButton("Restart");
-        restart.setBounds(1307, 481, 288, 50);
+        restart.setBounds(1575, 485, 288, 50);
         restart.setFont(new Font("Arial", Font.PLAIN, 20));
         restart.setPreferredSize(new Dimension(168, 50));
         restart.addActionListener(new ActionListener() {
@@ -299,7 +317,7 @@ public class Actions extends JFrame {
         
       
         changeAT = new JButton("New value");
-        changeAT.setBounds(1307, 355, 288, 50);
+        changeAT.setBounds(1575, 359, 288, 50);
         changeAT.setFont(new Font("Arial", Font.PLAIN, 20));
         changeAT.setPreferredSize(new Dimension(168, 50));
         changeAT.setEnabled(false);
@@ -364,8 +382,11 @@ public class Actions extends JFrame {
 						String text = "Argument ID: "+tooltipCellId+"\r\n"+tooltipArg.getText();
 						textArea.setText(text);
 						}
-						ArrayList<Argument> updatedPos = framework.argContribution(tooltipCellId, mode, "none",argArrayCopy,relArrayCopy);
-						textContri.setText("Without ArgID: "+tooltipCellId+"\nAct pos1: " + round(updatedPos.get(0).getActivity(),2)+"\nAct pos2: "+round(updatedPos.get(1).getActivity(),2));
+						if (evaluated) {
+							ArrayList<Argument> updatedPos = framework.argContribution(tooltipCellId, mode, "none",argArrayCopy,relArrayCopy);
+							textContri.setText("Without ArgID: "+tooltipCellId+"\nAct pos1: " + round(updatedPos.get(0).getActivity(),2)+"\nAct pos2: "+round(updatedPos.get(1).getActivity(),2));
+						}
+						
 						
 					}else{
 						tooltipCellId = Integer.parseInt(tooltipcell.getId())-1000;
@@ -406,7 +427,7 @@ public class Actions extends JFrame {
         getContentPane().add(undoButton);
                 
         textArea = new JTextArea();
-        textArea.setBounds(1307, 649, 288, 160);
+        textArea.setBounds(1575, 653, 288, 160);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -415,7 +436,7 @@ public class Actions extends JFrame {
         getContentPane().add(textArea);
         
         JTextArea lblNewLabel = new JTextArea("New label");
-        lblNewLabel.setBounds(1307, 103, 600, 83);
+        lblNewLabel.setBounds(1575, 37, 288, 166);
         lblNewLabel.setText("Issue: \n\n"+framework.getTopicDescription());
         lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         lblNewLabel.setLineWrap(true);
@@ -427,7 +448,7 @@ public class Actions extends JFrame {
         
         
         textContri = new JTextArea();
-        textContri.setBounds(1305, 893, 288, 83);
+        textContri.setBounds(1573, 897, 288, 83);
         textContri.setFont(new Font("Arial", Font.PLAIN, 20));
         textContri.setEditable(false);
         
@@ -435,17 +456,17 @@ public class Actions extends JFrame {
         
         POE = new JRadioButton("POE");
         POE.setSelected(true);
-        POE.setBounds(1307, 229, 74, 40);
+        POE.setBounds(1575, 233, 74, 40);
         POE.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(POE);
         
         BRD = new JRadioButton("BRD");
-        BRD.setBounds(1413, 229, 74, 40);
+        BRD.setBounds(1681, 233, 74, 40);
         BRD.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(BRD);
         
         SOE = new JRadioButton("SOE");
-        SOE.setBounds(1521, 229, 74, 40);
+        SOE.setBounds(1789, 233, 74, 40);
         SOE.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(SOE);
         
@@ -456,12 +477,12 @@ public class Actions extends JFrame {
         buttonGroup.add(POE);
         
         JLabel lblContribution = new JLabel("Arg Contribution");
-        lblContribution.setBounds(1307, 856, 147, 24);
+        lblContribution.setBounds(1575, 860, 147, 24);
         lblContribution.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(lblContribution);
         
         JLabel lblArgInfobox = new JLabel("Arg Infobox");
-        lblArgInfobox.setBounds(1307, 604, 135, 32);
+        lblArgInfobox.setBounds(1575, 608, 135, 32);
         lblArgInfobox.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(lblArgInfobox);
 	}
@@ -531,7 +552,7 @@ public class Actions extends JFrame {
 		biggerAT.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_BOTTOM);
 		biggerAT.put(mxConstants.STYLE_FILLCOLOR, "#FFFFFF");
 		biggerAT.put(mxConstants.STYLE_FONTCOLOR, "#078E6F");
-		biggerAT.put(mxConstants.STYLE_FONTSIZE, 16);
+		biggerAT.put(mxConstants.STYLE_FONTSIZE, 15);
 		
 
 		Hashtable<String, Object> smallerAT = new Hashtable<String,Object>();
@@ -541,7 +562,7 @@ public class Actions extends JFrame {
 		smallerAT.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_BOTTOM);
 		smallerAT.put(mxConstants.STYLE_FILLCOLOR, "#FFFFFF");
 		smallerAT.put(mxConstants.STYLE_FONTCOLOR, "#D63E3E");
-		smallerAT.put(mxConstants.STYLE_FONTSIZE, 16);
+		smallerAT.put(mxConstants.STYLE_FONTSIZE, 15);
 			
 		if(originalAT>evlAT){
 			return smallerAT;

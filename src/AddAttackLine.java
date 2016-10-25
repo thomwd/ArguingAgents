@@ -45,13 +45,23 @@ public class AddAttackLine extends Actions {
 					if (targetArgId != 0) {
 						
 						
+//						if (argArray.get(j).getArgId() == orginId) {
+//							v1 = getM().get(argArray.get(j).getSummary()+"\r\n"+argArray.get(j).getActivity());
+//						}
+//						if (argArray.get(j).getArgId() == targetArgId) {
+//							v2 = getM().get(argArray.get(j).getSummary()+"\r\n"+argArray.get(j).getActivity());
+//
+//						}
+						
 						if (argArray.get(j).getArgId() == orginId) {
-							v1 = getM().get(argArray.get(j).getSummary()+"\r\n"+argArray.get(j).getActivity());
+							v1 = getM().get("ArgId: "+ argArray.get(j).getArgId()+"\r\n"+argArray.get(j).getActivity());
 						}
 						if (argArray.get(j).getArgId() == targetArgId) {
-							v2 = getM().get(argArray.get(j).getSummary()+"\r\n"+argArray.get(j).getActivity());
+							v2 = getM().get("ArgId: "+argArray.get(j).getArgId()+"\r\n"+argArray.get(j).getActivity());
 
 						}
+						
+						
 						
 					    if(v1 !=null && v2 !=null)
 					    {

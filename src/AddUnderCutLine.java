@@ -47,7 +47,9 @@ public class AddUnderCutLine extends Actions {
 			String weight = String.valueOf(relation.getWeight());
 			for(int j = 0;j<argArray.size();j++){ //search for each argument for the orginArg
 				if (argArray.get(j).getArgId() == originArgId) {
-					originArg = getM().get(argArray.get(j).getSummary()+"\r\n"+argArray.get(j).getActivity());
+					//originArg = getM().get(argArray.get(j).getSummary()+"\r\n"+argArray.get(j).getActivity());
+					originArg = getM().get("ArgId: "+argArray.get(j).getArgId()+"\r\n"+argArray.get(j).getActivity());
+
 				}
 			}
 			for(int q = 0;q<relArray.size();q++){ //seach for all realtions for the targetRel
