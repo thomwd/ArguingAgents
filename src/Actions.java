@@ -111,7 +111,7 @@ public class Actions extends JFrame {
 			AddNode.addNode(nodeInfo,0,0,argId,argument.getSummary());
 		}
 		
-		
+			
 		AddAttackLine.addLine(argArray, relArray);
 				
         graphComponent.getGraphControl().addMouseListener(new MouseAdapter()

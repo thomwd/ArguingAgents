@@ -50,7 +50,7 @@ public class AddNode extends Actions{
 		Object parent = getGraph().getDefaultParent(); 
 		Object v1 = getGraph().insertVertex(parent, argId, nodeInfo, x, y, 80, 60,"nodeStyle");
 		//Object v1 = getGraph().insertVertex(parent, argId, nodeInfo, x, y, 150, 40,"nodeStyle");
-		getM().put(nodeInfo, v1);
+		getM().put(nodeInfo, v1);		
 		getGraph().getModel().endUpdate();
 	}
 }

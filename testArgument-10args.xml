@@ -21,14 +21,14 @@
 			<agentId>1</agentId>
 			<text>The suspect is guilty</text>
 			<summary>Guilty</summary>
-			<activation>0</activation>
+			<activation>0.5</activation>
 		</argument>
 
 		<argument argId="2">
 			<agentId>2</agentId>
 			<text>The suspect is innocent</text>
 			<summary>Innocent</summary>
-			<activation>0</activation>
+			<activation>0.5</activation>
 		</argument>
 
 		<argument argId="3">
@@ -56,10 +56,10 @@
 			<activation>0.7</activation>
 			<relations>
 				<targetArgs>
-					<targetArgId weight = "-0.3" relId = "5">
+					<targetArgId weight = "0.3" relId = "5">
 						1
 					</targetArgId>
-					<targetArgId weight = "0.3" relId = "6">
+					<targetArgId weight = "-0.3" relId = "6">
 						2
 					</targetArgId>
 				</targetArgs>
@@ -146,14 +146,11 @@
 			<summary>Number_study_low</summary>
 			<activation>0.8</activation>
 			<relations>
-				<targetRels>
-					<targetRelId weight="-0.4" relId = "12">
-						7
-					</targetRelId>
-					<targetRelId weight="-0.4" relId = "13">
+				<targetArgs>
+					<targetArgId weight="-0.4" relId = "12">
 						8
-					</targetRelId>
-				</targetRels>
+					</targetArgId>
+				</targetArgs>
 			</relations>
 		</argument>
 		
