@@ -100,8 +100,10 @@ public class Framework {
 	}
 
 	public static double applyThreshold(double activity, String threshold){
+		double k = 12;
+		double x0 = 0.5;
 		if(threshold == "sigmoid"){
-			return 1/(1+Math.exp(-activity));
+			return 1/(1+Math.exp(-k*(activity-x0)));
 		}else if (threshold == "binary"){
 			//System.out.println("we are in binary mode");
 			if(activity>0.5){
