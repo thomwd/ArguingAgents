@@ -216,7 +216,7 @@ public class Actions extends JFrame {
 				stylesheet.putCellStyle("winnerStyle", style);
 				
 								
-				ArrayList<Argument> solution = Framework.evaluate(mode, "none", argArrayCopyNew, relArrayForEvl,soList);
+				ArrayList<Argument> solution = Framework.evaluate(mode, "sigmoid", argArrayCopyNew, relArrayForEvl,soList);
 				
 				
 				
