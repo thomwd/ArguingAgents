@@ -41,14 +41,14 @@ public class AddUnderCutLine extends Actions {
 			int originArgId = relation.getOriginId();
 			String relId = String.valueOf(relation.getRelId()+1000);
 			int targetRelId = relation.getTargetRelId();
-			if (targetRelId != 0) {
-				System.out.println("rel: "+relation.getRelId()+" from arg: "+originArgId+" undercuts rel: "+targetRelId);
-			}
+//			if (targetRelId != 0) {
+//				System.out.println("rel: "+relation.getRelId()+" from arg: "+originArgId+" undercuts rel: "+targetRelId);
+//			}
 			String weight = String.valueOf(relation.getWeight());
 			for(int j = 0;j<argArray.size();j++){ //search for each argument for the orginArg
 				if (argArray.get(j).getArgId() == originArgId) {
-					//originArg = getM().get(argArray.get(j).getSummary()+"\r\n"+argArray.get(j).getActivity());
-					originArg = getM().get("ArgId: "+argArray.get(j).getArgId()+"\r\n"+argArray.get(j).getActivity());
+				//originArg = getM().get(argArray.get(j).getSummary()+"\r\n"+argArray.get(j).getActivity());
+				originArg = getM().get("ArgId: "+argArray.get(j).getArgId()+"\r\n"+argArray.get(j).getActivity());
 
 				}
 			}

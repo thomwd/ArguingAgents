@@ -44,7 +44,7 @@ public class AddAttackLine extends Actions {
 				for(int j = 0;j<argArray.size();j++){
 					if (targetArgId != 0) {
 						
-						
+//						
 //						if (argArray.get(j).getArgId() == orginId) {
 //							v1 = getM().get(argArray.get(j).getSummary()+"\r\n"+argArray.get(j).getActivity());
 //						}

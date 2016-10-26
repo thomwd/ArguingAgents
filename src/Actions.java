@@ -57,7 +57,11 @@ public class Actions extends JFrame {
 	private JRadioButton POE;
 	private JRadioButton BRD;
 	private JRadioButton SOE;
+	private JRadioButton None;
+	private JRadioButton Binary;
+	private JRadioButton Sigmoid;
 	private static String mode = "POE";
+	private static String threshold = "sigmoid";
 	private static boolean evaluated = false;
 	
 	
@@ -73,7 +77,6 @@ public class Actions extends JFrame {
 	
 
 	public Actions(ArrayList<Argument> argArray,ArrayList<Relation> relArray,Framework framework){
-		//super("Argumentation Framework");
 		super("TEA");
 		initGUI(argArray, relArray,framework);
 	}
@@ -83,10 +86,10 @@ public class Actions extends JFrame {
 	
 
 	public void initGUI(ArrayList<Argument> argArray,ArrayList<Relation> relArray,Framework framework) {
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		//setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setUndecorated(true);
 		setVisible(true);
-		//setSize(1980, 1200);
+		setSize(1980, 1200);
 		setLocationRelativeTo(null);
 		graphComponent = new mxGraphComponent(graph);
 		graphComponent.setBounds(5, 5, 1550, 1070);
@@ -107,7 +110,7 @@ public class Actions extends JFrame {
 			String activation = String.valueOf(argument.getActivity());
 			String argId = String.valueOf(argument.getArgId());
 			nodeInfo = "ArgId: "+argId+"\r\n"+activation;
-			//String nodeInfo = summary+"\r\n"+activation;
+			//nodeInfo = summary+"\r\n"+activation;
 			AddNode.addNode(nodeInfo,0,0,argId,argument.getSummary());
 		}
 		
@@ -134,6 +137,7 @@ public class Actions extends JFrame {
          try
 			{
         	 
+        	 //layout.setRadius(70);
         	 layout.setRadius(500);
         	 layout.setX0(225);
         	 layout.setY0(3);
@@ -171,7 +175,7 @@ public class Actions extends JFrame {
         
         
         evaluation = new JButton("Evaluate");
-        evaluation.setBounds(1575, 296, 288, 50);
+        evaluation.setBounds(1575, 356, 288, 50);
         evaluation.setFont(new Font("Arial", Font.PLAIN, 20));
         evaluation.setPreferredSize(new Dimension(168, 50));
         evaluation.addActionListener(new ActionListener() {
@@ -187,6 +191,16 @@ public class Actions extends JFrame {
 				}else if (BRD.isSelected()) {
 					mode = "BRD";
 				}
+				
+				if (Sigmoid.isSelected()) {
+					threshold = "sigmoid";
+				}else if (Binary.isSelected()) {
+					threshold = "binary";
+				}else if (None.isSelected()) {
+					threshold = "none";
+				}
+				
+				
 				
 				ArrayList<Argument> argArrayCopyNew = copyArgArrayList(argArrayCopy);
 				ArrayList<Relation> relArrayCopyNew =  copyRelArrayList(relArrayCopy);
@@ -216,14 +230,13 @@ public class Actions extends JFrame {
 				stylesheet.putCellStyle("winnerStyle", style);
 				
 								
-				ArrayList<Argument> solution = Framework.evaluate(mode, "sigmoid", argArrayCopyNew, relArrayForEvl,soList);
-				
+				ArrayList<Argument> solution = Framework.evaluate(mode, threshold, argArrayCopyNew, relArrayForEvl,soList);
 				
 				
 				for (int i = 0; i < solution.size(); i++) {
 					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(i).getArgId()+1));
 					//newSummary = solution.get(i).getSummary()+"\r\n"+round(argArrayCopy.get(i).getActivity(), 2)+">>"+round(solution.get(i).getActivity(),2);
-					newSummary = "ArgId: "+solution.get(i).getArgId()+"\r\n"+round(argArrayCopy.get(i).getActivity(), 2)+">>"+round(solution.get(i).getActivity(),2);
+					newSummary = "ArgId: "+solution.get(i).getArgId()+"\r\n"+round(argArrayCopy.get(i).getActivity(), 2)+">>"+round(solution.get(i).getActivity(),4);
 
 					graph.getModel().setValue(result, newSummary);
 					Hashtable<String, Object> styleNodeNew = getNodeColor(argArrayCopy.get(i).getActivity(), solution.get(i).getActivity());
@@ -270,7 +283,7 @@ public class Actions extends JFrame {
         
         undoButton.setFont(new Font("Arial", Font.PLAIN, 20));
         undoButton.setPreferredSize(new Dimension(168, 50));
-        undoButton.setBounds(1575, 422, 288, 50);
+        undoButton.setBounds(1575, 482, 288, 50);
         undoButton.setEnabled(false);
         undoButton.addActionListener(new ActionListener() {
 			
@@ -294,7 +307,7 @@ public class Actions extends JFrame {
         
         
         restart = new JButton("Restart");
-        restart.setBounds(1575, 485, 288, 50);
+        restart.setBounds(1575, 545, 288, 50);
         restart.setFont(new Font("Arial", Font.PLAIN, 20));
         restart.setPreferredSize(new Dimension(168, 50));
         restart.addActionListener(new ActionListener() {
@@ -317,7 +330,7 @@ public class Actions extends JFrame {
         
       
         changeAT = new JButton("New value");
-        changeAT.setBounds(1575, 359, 288, 50);
+        changeAT.setBounds(1575, 419, 288, 50);
         changeAT.setFont(new Font("Arial", Font.PLAIN, 20));
         changeAT.setPreferredSize(new Dimension(168, 50));
         changeAT.setEnabled(false);
@@ -383,8 +396,8 @@ public class Actions extends JFrame {
 						textArea.setText(text);
 						}
 						if (evaluated) {
-							ArrayList<Argument> updatedPos = framework.argContribution(tooltipCellId, mode, "none",argArrayCopy,relArrayCopy);
-							textContri.setText("Without ArgID: "+tooltipCellId+"\nAct pos1: " + round(updatedPos.get(0).getActivity(),2)+"\nAct pos2: "+round(updatedPos.get(1).getActivity(),2));
+							ArrayList<Argument> updatedPos = framework.argContribution(tooltipCellId, mode, threshold,argArrayCopy,relArrayCopy);
+							textContri.setText("Without ArgID: "+tooltipCellId+"\nAct pos1: " + round(updatedPos.get(0).getActivity(),4)+"\nAct pos2: "+round(updatedPos.get(1).getActivity(),4));
 						}
 						
 						
@@ -427,7 +440,7 @@ public class Actions extends JFrame {
         getContentPane().add(undoButton);
                 
         textArea = new JTextArea();
-        textArea.setBounds(1575, 653, 288, 160);
+        textArea.setBounds(1575, 687, 288, 160);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -456,17 +469,17 @@ public class Actions extends JFrame {
         
         POE = new JRadioButton("POE");
         POE.setSelected(true);
-        POE.setBounds(1575, 233, 74, 40);
+        POE.setBounds(1575, 291, 74, 40);
         POE.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(POE);
         
         BRD = new JRadioButton("BRD");
-        BRD.setBounds(1681, 233, 74, 40);
+        BRD.setBounds(1681, 291, 74, 40);
         BRD.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(BRD);
         
         SOE = new JRadioButton("SOE");
-        SOE.setBounds(1789, 233, 74, 40);
+        SOE.setBounds(1789, 291, 74, 40);
         SOE.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(SOE);
         
@@ -476,13 +489,55 @@ public class Actions extends JFrame {
         buttonGroup.add(SOE);
         buttonGroup.add(POE);
         
+        
+        
+        Sigmoid = new JRadioButton("Sigmoid");
+        Sigmoid.setSelected(true);
+        Sigmoid.setBounds(1575, 233, 100, 40);
+        Sigmoid.setFont(new Font("Arial", Font.PLAIN, 20));
+        getContentPane().add(Sigmoid);
+        
+        None = new JRadioButton("None");
+        None.setBounds(1789, 233, 74, 40);
+        None.setFont(new Font("Arial", Font.PLAIN, 20));
+        getContentPane().add(None);
+        
+        Binary = new JRadioButton("Binary");
+        Binary.setBounds(1681, 233, 93, 40);
+        Binary.setFont(new Font("Arial", Font.PLAIN, 20));
+        getContentPane().add(Binary);
+        
+        
+        ButtonGroup buttonGroupTh = new ButtonGroup();
+        buttonGroupTh.add(Sigmoid);
+        buttonGroupTh.add(Binary);
+        buttonGroupTh.add(None);
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         JLabel lblContribution = new JLabel("Arg Contribution");
         lblContribution.setBounds(1575, 860, 147, 24);
         lblContribution.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(lblContribution);
         
         JLabel lblArgInfobox = new JLabel("Arg Infobox");
-        lblArgInfobox.setBounds(1575, 608, 135, 32);
+        lblArgInfobox.setBounds(1575, 642, 135, 32);
         lblArgInfobox.setFont(new Font("Arial", Font.PLAIN, 20));
         getContentPane().add(lblArgInfobox);
 	}
