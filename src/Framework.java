@@ -67,12 +67,14 @@ public class Framework {
 			if((origin.getActivity() * relation.getWeight()) < 0){ //If the argument attacks the target argument, there is doubt, so set the activity of the target argument to 0
 				return 0;
 			}else{
+				if(target.getActivity()!=0){return 1;}
 				return target.getActivity();
 			}
 		}else if(mode == "SOE"){ //Scintilla of Evidence
 			if((origin.getActivity() * relation.getWeight()) > 0){ //If the argument supports the target argument, there is a scintilla of evidence, so set the activity of the target argument to 1
 				return 1;
 			}else{
+				if(target.getActivity()!=1){return 0;}
 				return target.getActivity();
 			}
 		}else{ //Error because it is not one of the predefined modes
