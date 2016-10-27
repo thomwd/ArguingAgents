@@ -17,11 +17,11 @@ public class Relation {
 		}
 		this.targetArgId = targetArgId;
 		this.targetRelId = targetRelId;
-		if(flag == false){
+		if(flag == false){ //If we create a relation and we already know it is an attack relation, we store it as such
 			this.weight = weight;
 			this.support = false;
 		}
-		else if(weight < 0.0){
+		else if(weight < 0.0){ //If the weight of a relation is < 0 and it was a support relation, it now becomes an attack relation
 			this.support = false;
 			this.weight = (weight*-1);
 		}else{
@@ -34,12 +34,13 @@ public class Relation {
 	}
 
 	public int getTargetArgId() {
-		if(targetArgId != 0){
-	      return targetArgId;
-	    }else{
-	      return 0;
-	    }
+      return targetArgId;
 	}
+
+	public int getTargetRelId() {
+	  return targetRelId;
+	}
+
 
 	public void setFlag(boolean flag){ //set this flag to false if the relation is an attack relation and to true if it is a support relation 
 		support = flag;
@@ -48,17 +49,7 @@ public class Relation {
 	public boolean getFlag(){ //returns false if it is an attack relation and true if it is a support relation
 		return support;
 	}
-
-
-	public int getTargetRelId() {
-		if(targetRelId != 0){
-	      return targetRelId;
-	    }else{
-	      return 0;
-	    }
-
-	}
-
+	
 	public void setWeight(double weight) {
 		this.weight = weight;
 	}
