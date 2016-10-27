@@ -21,14 +21,14 @@
 			<agentId>1</agentId>
 			<text>Buy a Mac</text>
 			<summary>Buy_mac</summary>
-			<activation>0</activation>
+			<activation>0.5</activation>
 		</argument>
 
 		<argument argId="2">
 			<agentId>2</agentId>
 			<text>Buy a Windows</text>
 			<summary>Buy_windows</summary>
-			<activation>0</activation>
+			<activation>0.5</activation>
 		</argument>
 
 		<argument argId="3">
@@ -38,10 +38,10 @@
 			<activation>0.8</activation>
 			<relations>
 				<targetArgs>
-					<targetArgId weight="0.8" relId = "1">
+					<targetArgId weight="0.6" relId = "1">
 						1
 					</targetArgId>
-					<targetArgId weight="-0.8" relId = "2">
+					<targetArgId weight="-0.6" relId = "2">
 						2
 					</targetArgId>
 				</targetArgs>
@@ -56,7 +56,7 @@
 			<activation>0.7</activation>
 			<relations>
 				<targetRels>
-					<targetRelId weight = "-0.8" relId = "3">
+					<targetRelId weight = "-0.7" relId = "3">
 						2
 					</targetRelId>
 				</targetRels>
@@ -102,22 +102,26 @@
 			<activation>0.7</activation>
 			<relations>
 				<targetArgs>
-					<targetArgId weight="-0.9" relId = "7">
+					<targetArgId weight="-0.6" relId = "7">
 						1
+					</targetArgId>
+					<targetArgId weight="0.6" relId = "8">
+						2
 					</targetArgId>
 				</targetArgs>
 			</relations>
 		</argument>
+		
 		<argument argId="8">
 			<agentId>1</agentId>
-			<text>Still can be hacked</text>
-			<summary>Can_be_hacked</summary>
-			<activation>0.7</activation>
+			<text>Good compatibility</text>
+			<summary>Compatibility</summary>
+			<activation>0.6</activation>
 			<relations>
 				<targetArgs>
-					<targetRelId weight="-0.5" relId = "8">
-						1
-					</targetRelId>
+					<targetArgId weight="0.5" relId = "9">
+						2
+					</targetArgId>
 				</targetArgs>
 			</relations>
 		</argument>

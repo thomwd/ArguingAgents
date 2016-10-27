@@ -21,14 +21,14 @@
 			<agentId>1</agentId>
 			<text>Buy a Mac</text>
 			<summary>Buy_mac</summary>
-			<activation>0</activation>
+			<activation>0.5</activation>
 		</argument>
 
 		<argument argId="2">
 			<agentId>2</agentId>
 			<text>Buy a Windows</text>
 			<summary>Buy_windows</summary>
-			<activation>0</activation>
+			<activation>0.5</activation>
 		</argument>
 
 		<argument argId="3">
