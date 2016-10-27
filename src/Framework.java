@@ -49,7 +49,7 @@ public class Framework {
 
 
 	
-	//Function to calculate the activity of arguments, based on their mode
+	//Function to calculate the activity of arguments, based on the proof standard used
 	public static double solveArgument (String mode, ArrayList<Argument> argumentList, Relation relation){
 		int targetId = relation.getTargetArgId();
 		int originId = relation.getOriginId();
@@ -79,7 +79,8 @@ public class Framework {
 			return 0;
 		}
 	}
-
+	
+	//Function to update the weight of relations
 	public static double solveRelation(String mode, ArrayList<Relation> relationList, ArrayList<Argument> argumentList, Relation relation){
 		int targetRelId = relation.getTargetRelId();
 		int originId = relation.getOriginId();
@@ -91,6 +92,8 @@ public class Framework {
 		return weight;
 	}
 
+	
+	//Function to apply the right threshold function to activity
 	public static double applyThreshold(double activity, String threshold){
 		double k = 12;
 		double x0 = 0.5;
@@ -112,10 +115,10 @@ public class Framework {
 	 * @param solution ArrayList<Argument> a copy of the field 'arguments'. (Not just a copy of the reference)
 	 * @return ArrayList<Argument> a copy of the field 'arguments' for which all activations have been computed.
 	 */
-	//TODO: if threshold is changed to a function (lambda expression), this also needs to be changed in the argContribution method.
+	
 	public static ArrayList<Argument> evaluate(String mode, String threshold, ArrayList<Argument> arguments,
 										ArrayList<Relation> relations, ArrayList<Argument> solution){
-		boolean solved = true;                              // if false, function will call itself recursively.
+		boolean solved = true;                              // A flag to see if there are still arguments to solve
 		ArrayList<Integer> removeArgs = new ArrayList<Integer>();
 		for(int i = 0; i < arguments.size(); i++){ 			// Iterate over all arguments
 			Argument argument = arguments.get(i);
@@ -123,12 +126,16 @@ public class Framework {
                 // enforce 0 <= activation <= 1
 				if(argument.getActivity()<0){argument.setActivity(0);}
 				if(argument.getActivity()>1){argument.setActivity(1);}
+				//Apply the threshold
 				argument.setActivity(applyThreshold(argument.getActivity(),threshold));	
+				//A check to see if we are solving an actual framework, or calculating the contribution of an argument to the framework
 				if (argument.getArgId()>100) {
 					getArg((argument.getArgId())/100, solution).setActivity(argument.getActivity());
 				}else	getArg(argument.getArgId(), solution).setActivity(argument.getActivity());
+				
 				removeArgs.add(argument.getArgId());        // Add this argument to the list of arguments that need to be removed
 				ArrayList<Integer> removeRels = new ArrayList<Integer>();
+				
 				for(int j = 0; j < relations.size(); j++){  // Iterate over all the relations
 					Relation relation = relations.get(j);
 					                                        // Check if the origin of the relation is the current argument
@@ -143,12 +150,11 @@ public class Framework {
 						
 						if(relation.getTargetArgId()!=0){ 	// Check if the target of the relation is an argument
 							solved = false; 				// There are still arguments to analyze
-                                                            // Calculate the new activity for the argument
-							double activity = solveArgument(mode, arguments, relation);
+							double activity = solveArgument(mode, arguments, relation); // Calculate the new activity for the argument
 							int targetId = relation.getTargetArgId();
 							getArg(targetId, arguments).setActivity(activity);
 							
-							//Make sure that activation is not below zero or above 1
+							//Make sure that activation is not below zero or above 1 in the solution
 							if(activity<0){activity=0;}
 							if(activity>1){activity=1;}	
 							getArg(targetId, solution).setActivity(activity);
@@ -161,8 +167,8 @@ public class Framework {
 							getRel(targetId, relations).setWeight(weight);
 						}
 						removeRels.add(relation.getRelId()); //Add this relation to the list of relations that need to be removed
-					} // end if(isLeaf(argument,relations))
-				} // end for(int j = 0; j < relations.size(); j++)
+					}
+				}
 				
 				// Remove all the relations that we do not need to analyze anymore
 				for(int k=0; k < removeRels.size();k++){
@@ -171,8 +177,8 @@ public class Framework {
 						relations.remove(getRel(removeRels.get(k),relations));
 					}
 				}
-			} // end if(isLeaf(argument,relations))
-		} // end for(int i = 0; i < arguments.size(); i++)
+			} 
+		} 
 
 		//Remove all arguments that do not need to be analyzed anymore
 		for(int k=0; k < removeArgs.size();k++){
@@ -183,7 +189,7 @@ public class Framework {
 			solution = evaluate (mode, threshold, arguments, relations, solution);
 		}
 		return solution; 	// If there were no more arguments to solve, return the current solution
-	} // end function evaluate
+	} 
 
     /**
      * Calculates the contribution of this argument (and the subtree of arguments that attack/support it)
@@ -201,8 +207,7 @@ public class Framework {
         ArrayList<Relation> copyRels = Actions.copyRelArrayList(relations);
         Argument original = getArg(argId, arguments);
         int oldId = original.getArgId();            // dummy has and keeps 0 activation
-       // int newId = 99999;                          // needs to be unique TODO: which id should be specified
-        int newId = oldId*100;                          // needs to be unique TODO: which id should be specified
+        int newId = oldId*100;                          // ID needs to be unique
         Argument dummy = new Argument(newId, original.getAgentId(), "dummy", "dummy", 0);
         copyArgs.add(dummy);
         for(int j = 0; j < copyRels.size(); j++) {  // Transfer all outgoing relations
