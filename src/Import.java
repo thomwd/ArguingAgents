@@ -87,7 +87,7 @@ public class Import extends JFrame {
 				if(value == JFileChooser.APPROVE_OPTION){
 					file = chooser.getSelectedFile();
 					try {
-						document = ProcessXML.parse(file.getAbsolutePath());
+						document = ProcessXML.parse(file.getAbsolutePath()); //get the path of the input xml file
 						textField.setText(file.getAbsolutePath());
 					} catch (DocumentException e) {
 						e.printStackTrace();
@@ -107,14 +107,14 @@ public class Import extends JFrame {
 		btnImport.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				argArray = ProcessXML.getArgument(document);
-				relArray = ProcessXML.getRelation(document);
-				ArrayList<Argument>argArrayCopy = Actions.copyArgArrayList(argArray);
+				argArray = ProcessXML.getArgument(document); //construct the arrayList consists of all arguments
+				relArray = ProcessXML.getRelation(document);//construct the arrayList consists of all relations
+				ArrayList<Argument>argArrayCopy = Actions.copyArgArrayList(argArray);//make the copy of relations and arguments
 				ArrayList<Relation>relArrayCopy = Actions.copyRelArrayList(relArray);
 				String subject = ProcessXML.getSubject(document);
 				String subjectSummary = ProcessXML.getSummarySubject(document);
 				Framework framework = new Framework(subject, subjectSummary, argArrayCopy, relArrayCopy);
-				Actions actions = new Actions(argArrayCopy,relArrayCopy,framework);
+				Actions actions = new Actions(argArrayCopy,relArrayCopy,framework); 
 				Import.this.dispose();
 				actions.setVisible(true);
 			}

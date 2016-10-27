@@ -19,7 +19,7 @@ public class AddNode extends Actions{
 	public static void addNode(String nodeInfo,int x ,int y,String argId,String text){
 		mxStylesheet stylesheet = graph.getStylesheet();
 		
-		if (Integer.valueOf(argId)<=2) {
+		if (Integer.valueOf(argId)<=2) {//define the style of the vertex of positions
 			Hashtable<String, Object> stylePos = new Hashtable<String,Object>();
 			stylePos.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
 			stylePos.put(mxConstants.STYLE_OPACITY, 50);
@@ -34,7 +34,7 @@ public class AddNode extends Actions{
 			stylePos.put(mxConstants.STYLE_FONTSIZE, 15);
 			stylesheet.putCellStyle("nodeStyle", stylePos);
 			
-		}else{
+		}else{ //define the style of the vertex of the normal arguments
 			Hashtable<String, Object> style = new Hashtable<String,Object>();
 			style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
 			style.put(mxConstants.STYLE_OPACITY, 50);
@@ -48,8 +48,7 @@ public class AddNode extends Actions{
 		
 		getGraph().getModel().beginUpdate();
 		Object parent = getGraph().getDefaultParent(); 
-		Object v1 = getGraph().insertVertex(parent, argId, nodeInfo, x, y, 80, 60,"nodeStyle");
-		//Object v1 = getGraph().insertVertex(parent, argId, nodeInfo, x, y, 170, 60,"nodeStyle");
+		Object v1 = getGraph().insertVertex(parent, argId, nodeInfo, x, y, 80, 60,"nodeStyle");// insert the vertex to with specified id, text,size and style
 		getM().put(nodeInfo, v1);		
 		getGraph().getModel().endUpdate();
 	}

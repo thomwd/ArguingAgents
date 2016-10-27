@@ -4,18 +4,13 @@ public class Relation {
 	private  int relId = 0; //The identifier for this relation
 	private  int originId = 0; //The id of the argument where this relation originates from
 	private  int targetArgId = 0; //The target of this relation. If the target is a relation, this value is null
-	/*private int frontArgId = 0;//frontArgId and endArgId are to specify which relation it undercuts.
-	private int endArgId = 0;//the reason why it shouldn't be targetRelationId is that the targetRelationId is not the input of the agent.
-	//The agent only knows which relation between two arguments it undercuts instead of the id of that relation.
-*/	private  double weight = 0; //The weight of this relation. TODO: think of sensible values
-	private int targetRelId = 0;
-	private boolean support = true;
+	private  double weight = 0; //The weight of this relation. 
+	private int targetRelId = 0;//The targeting relation id (for undercut case)
+	private boolean support = true;// The boolean flag to show whether it is attack relation or support relation
 
 	public Relation(int relId, int originId, int targetArgId, int targetRelId, double weight, boolean flag) {
 		if(relId!= 0){
 				this.relId = relId;
-		}else{
-			//error
 		}
 		if(originId != 0){
 			this.originId = originId;

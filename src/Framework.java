@@ -57,11 +57,8 @@ public class Framework {
 		Argument origin = getArg(originId, argumentList);
 		Argument target = getArg(targetId, argumentList);
 		
-		//System.out.println("relId: "+relation.getRelId()+" origin: "+origin.getSummary()+" target: "+target.getSummary());
 		if(mode == "POE"){ //Preponderance of Evidence
-			//System.out.println("original activity for target: "+ target.getActivity());
 			double activity = target.getActivity() + (origin.getActivity() * relation.getWeight());
-			//System.out.println("new activity for target: " + activity);
 			return activity;
 		}else if(mode == "BRD"){ //Beyond Reasonable Doubt
 			if((origin.getActivity() * relation.getWeight()) < 0){ //If the argument attacks the target argument, there is doubt, so set the activity of the target argument to 0
@@ -77,7 +74,7 @@ public class Framework {
 				if(target.getActivity()!=1){return 0;}
 				return target.getActivity();
 			}
-		}else{ //Error because it is not one of the predefined modes
+		}else{ 
 			System.err.println("Error: mode is not recognized.");
 			return 0;
 		}
@@ -89,15 +86,8 @@ public class Framework {
 		
 		Argument origin = getArg(originId, argumentList);
 		Relation target = getRel(targetRelId, relationList);
-		
 		double weight = 0;
-
-		// TODO this update is complex, let's discuss this in person
-		//System.out.println("relId: "+relation.getRelId()+" targetRel: "+relation.getTargetRelId());
-		
 		weight = target.getWeight() + (origin.getActivity() * relation.getWeight());
-		//System.out.println("original weight for target: "+target.getWeight());
-		//System.out.println("new weight for target: "+weight);
 		return weight;
 	}
 
@@ -107,7 +97,6 @@ public class Framework {
 		if(threshold == "sigmoid"){
 			return 1/(1+Math.exp(-k*(activity-x0)));
 		}else if (threshold == "binary"){
-			//System.out.println("we are in binary mode");
 			if(activity>0.5){
 				return 1;
 			}
@@ -134,13 +123,10 @@ public class Framework {
                 // enforce 0 <= activation <= 1
 				if(argument.getActivity()<0){argument.setActivity(0);}
 				if(argument.getActivity()>1){argument.setActivity(1);}
-				//System.out.println("thresholding argument "+argument.getArgId());
 				argument.setActivity(applyThreshold(argument.getActivity(),threshold));	
 				if (argument.getArgId()>100) {
 					getArg((argument.getArgId())/100, solution).setActivity(argument.getActivity());
 				}else	getArg(argument.getArgId(), solution).setActivity(argument.getActivity());
-				//System.out.println("activity is now  "+argument.getActivity());				
-				//TODO: work with a threshold
 				removeArgs.add(argument.getArgId());        // Add this argument to the list of arguments that need to be removed
 				ArrayList<Integer> removeRels = new ArrayList<Integer>();
 				for(int j = 0; j < relations.size(); j++){  // Iterate over all the relations
@@ -182,7 +168,6 @@ public class Framework {
 				for(int k=0; k < removeRels.size();k++){
                     //Do not remove a relation if it is the target of another relation
 					if(isNotTargetRel(getRel(removeRels.get(k),relations),relations)==true){
-						//System.out.println("Removed relation "+getRel(removeRels.get(k),relations).getRelId());
 						relations.remove(getRel(removeRels.get(k),relations));
 					}
 				}
@@ -191,12 +176,10 @@ public class Framework {
 
 		//Remove all arguments that do not need to be analyzed anymore
 		for(int k=0; k < removeArgs.size();k++){
-			//System.out.println("Removed argument "+getArg(removeArgs.get(k),arguments).getArgId());
 			arguments.remove(getArg(removeArgs.get(k),arguments));
 		}
 		// If there are still arguments to be calculated, recursively solve the remaining arguments and relations
 		if(!solved){
-			//System.out.println("It is not solved yet");
 			solution = evaluate (mode, threshold, arguments, relations, solution);
 		}
 		return solution; 	// If there were no more arguments to solve, return the current solution
@@ -252,7 +235,6 @@ public class Framework {
 				}
 			}			
 		}
-		//System.out.println("Argument "+argument.getArgId()+" is a leaf.");
 		return true; //Otherwise it is a leaf
 	}
 
@@ -267,45 +249,6 @@ public class Framework {
 		return true; //Otherwise return true
 	}
 	
-	//A function to determine which arguments and relations are in which layer (right Michael?)
-	public void showLeaf(ArrayList<Argument> arguments,ArrayList<Relation> relations){
-		boolean isLeaf = true;
-		int size = arguments.size();
-		List<Integer> leafToRemove = new ArrayList<Integer>();
-		for(int i = 0;i<size;i++){
-			isLeaf = true;
-			List<Integer> relToRemove = new ArrayList<Integer>();
-			Argument argument = arguments.get(i);
-			int argId = argument.getArgId();
-			for(int j = 0;j<relations.size();j++){
-				Relation relation = relations.get(j);
-				if (relation.getTargetArgId() == argId) {
-					isLeaf = false;
-				}
-			}
-			if (isLeaf == true) {
-				//System.out.println("Arg"+argId+" is leaf");
-				for(int j = 0; j<relations.size();j++){
-					if(relations.get(j).getOriginId() == argId){
-						relToRemove.add(relations.get(j).getRelId());
-					}
-				}
-				leafToRemove.add(argId);
-				for(int q = 0;q<relToRemove.size();q++){
-					//System.out.println("removed relation:"+relToRemove.get(q));
-					relations.remove(getRel(relToRemove.get(q),relations));
-				}
-			}
-		}
-		for(int i = 0;i<leafToRemove.size();i++){
-			arguments.remove(getArg(leafToRemove.get(i),arguments));
-		}
-		//System.out.println("go to next layer, size of remaining arguments: "+ arguments.size()+" size of remaining relations: "+relations.size());
-		if (arguments.size() != 0 ) {
-			showLeaf(arguments, relations);
-		}else return;
-		
-	}
 	
 	//Get an argument from the argument list with a certain ID
 	public static Argument getArg(int argId, ArrayList<Argument> arguments){

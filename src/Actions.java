@@ -48,7 +48,6 @@ public class Actions extends JFrame {
 	private JButton undoButton = new JButton("Restore");
 	private JTextArea textArea;
 	private JTextArea textContri;
-	//private  mxIGraphLayout layout;
 	private  mxCircleLayout layout;
     private static int selectedCellId = 0;
     private static mxCell selectedCell = null;
@@ -86,14 +85,14 @@ public class Actions extends JFrame {
 	
 
 	public void initGUI(ArrayList<Argument> argArray,ArrayList<Relation> relArray,Framework framework) {
-		//setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setUndecorated(true);
 		setVisible(true);
-		setSize(1980, 1200);
 		setLocationRelativeTo(null);
 		graphComponent = new mxGraphComponent(graph);
 		graphComponent.setBounds(5, 5, 1550, 1070);
 		layout = new mxCircleLayout(graph);
+		//some graph settings
 		getContentPane().setLayout(null);
 		graphComponent.setPreferredSize(new Dimension(1550, 1070));
 		getContentPane().add(graphComponent);
@@ -109,13 +108,13 @@ public class Actions extends JFrame {
 			String summary = argument.getSummary();
 			String activation = String.valueOf(argument.getActivity());
 			String argId = String.valueOf(argument.getArgId());
-			nodeInfo = "ArgId: "+argId+"\r\n"+activation;
-			//nodeInfo = summary+"\r\n"+activation;
+			nodeInfo = "ArgId: "+argId+"\r\n"+activation; 
+			//set the content of a vertex, in this case, each vertex is an argument
 			AddNode.addNode(nodeInfo,0,0,argId,argument.getSummary());
 		}
 		
 			
-		AddAttackLine.addLine(argArray, relArray);
+		AddAttackLine.addLine(argArray, relArray);//add the edges(relations) between nodes
 				
         graphComponent.getGraphControl().addMouseListener(new MouseAdapter()
 		{
@@ -133,11 +132,11 @@ public class Actions extends JFrame {
 			{
 				cell = graph.getDefaultParent();
 			}
+         
+         // Implement the layout 
          graph.getModel().beginUpdate();
          try
 			{
-        	 
-        	 //layout.setRadius(70);
         	 layout.setRadius(500);
         	 layout.setX0(225);
         	 layout.setY0(3);
@@ -162,14 +161,16 @@ public class Actions extends JFrame {
 			}
          
            
- 		AddUnderCutLine.addUnderCutLine(argArray, relArray);
+ 		AddUnderCutLine.addUnderCutLine(argArray, relArray); //add the edges for undercut relations
 
+ 		//some settings to the graph
  		graph.setCellsMovable(false);
         graph.setEdgeLabelsMovable(false);
         graph.setAllowDanglingEdges(false);
         graph.setSplitEnabled(false);
         graphComponent.setConnectable(false);
         
+        //make the copy of the input for comparing the outcome of the evaluation and original file
         argArrayCopy = copyArgArrayList(argArray);
 		relArrayCopy = copyRelArrayList(relArray);
         
@@ -183,7 +184,7 @@ public class Actions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				
-				
+				//proof methods and threshold selection
 				if (POE.isSelected()) {
 					mode = "POE";
 				}else if (SOE.isSelected()) {
@@ -201,10 +202,11 @@ public class Actions extends JFrame {
 				}
 				
 				
-				
+				//another copy for evaluation
 				ArrayList<Argument> argArrayCopyNew = copyArgArrayList(argArrayCopy);
 				ArrayList<Relation> relArrayCopyNew =  copyRelArrayList(relArrayCopy);
 					
+				
 				ArrayList<Relation> relArrayForEvl = new ArrayList<Relation>();
 				for(int i=0; i<relArrayCopyNew.size();i++){
 					Relation temp = relArrayCopyNew.get(i);
@@ -212,11 +214,36 @@ public class Actions extends JFrame {
 				}
 				
 				
-				ArrayList<Argument> soList = copyArgArrayList(argArrayCopy);
-				 
+				ArrayList<Argument> soList = copyArgArrayList(argArrayCopy);				
+				ArrayList<Argument> solution = Framework.evaluate(mode, threshold, argArrayCopyNew, relArrayForEvl,soList); //implement the evaluation.
+				
+				
+				
 				String newSummary = null;
 				mxCell result = null;
+				for (int i = 0; i < solution.size(); i++) {
+					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(i).getArgId()+1));
+					newSummary = "ArgId: "+solution.get(i).getArgId()+"\r\n"+round(argArrayCopy.get(i).getActivity(), 2)+">>"+round(solution.get(i).getActivity(),4);
+					//update the activation
+					graph.getModel().setValue(result, newSummary);
+					Hashtable<String, Object> styleNodeNew = getNodeColor(argArrayCopy.get(i).getActivity(), solution.get(i).getActivity());
+					mxStylesheet stylesheetNodeNew = graph.getStylesheet();
+					stylesheetNodeNew.putCellStyle("updatedNodeStyle", styleNodeNew);
+					graph.getModel().setStyle(result, "updatedNodeStyle"); // adapt the style for the updated vertex
+				}
+
+				ArrayList<mxCell> conclusion = new ArrayList<mxCell>();//create a arrayList storing winning vertexes 
+				if (solution.get(0).getActivity()>solution.get(1).getActivity()){
+					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(0).getArgId()+1)));
+				}else if (solution.get(0).getActivity()<solution.get(1).getActivity()) {
+					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(1).getArgId()+1)));
+				}else {
+					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(0).getArgId()+1)));
+					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(1).getArgId()+1)));
+				}
 				
+				
+				// set the styles for the winning vertex
 				mxStylesheet stylesheet = graph.getStylesheet();
 				Hashtable<String, Object> style = new Hashtable<String,Object>();
 				style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
@@ -229,33 +256,10 @@ public class Actions extends JFrame {
 				style.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
 				stylesheet.putCellStyle("winnerStyle", style);
 				
-								
-				ArrayList<Argument> solution = Framework.evaluate(mode, threshold, argArrayCopyNew, relArrayForEvl,soList);
 				
 				
-				for (int i = 0; i < solution.size(); i++) {
-					result= (mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(i).getArgId()+1));
-					//newSummary = solution.get(i).getSummary()+"\r\n"+round(argArrayCopy.get(i).getActivity(), 2)+">>"+round(solution.get(i).getActivity(),2);
-					newSummary = "ArgId: "+solution.get(i).getArgId()+"\r\n"+round(argArrayCopy.get(i).getActivity(), 2)+">>"+round(solution.get(i).getActivity(),4);
-
-					graph.getModel().setValue(result, newSummary);
-					Hashtable<String, Object> styleNodeNew = getNodeColor(argArrayCopy.get(i).getActivity(), solution.get(i).getActivity());
-					mxStylesheet stylesheetNodeNew = graph.getStylesheet();
-					stylesheetNodeNew.putCellStyle("updatedNodeStyle", styleNodeNew);
-					graph.getModel().setStyle(result, "updatedNodeStyle");
-				}
-
-				ArrayList<mxCell> conclusion = new ArrayList<mxCell>();
-				if (solution.get(0).getActivity()>solution.get(1).getActivity()){
-					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(0).getArgId()+1)));
-				}else if (solution.get(0).getActivity()<solution.get(1).getActivity()) {
-					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(1).getArgId()+1)));
-				}else {
-					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(0).getArgId()+1)));
-					conclusion.add((mxCell) ((mxGraphModel)graph.getModel()).getCell(String.valueOf(solution.get(1).getArgId()+1)));
-				}
 				for(int i = 0;i<conclusion.size();i++){
-					graph.getModel().setStyle(conclusion.get(i), "winnerStyle");
+					graph.getModel().setStyle(conclusion.get(i), "winnerStyle");// adapt the style for winners
 				}
 				
 				if(conclusion.size() == 1){
@@ -269,7 +273,7 @@ public class Actions extends JFrame {
 					Hashtable<String, Object> styleEdgeNew = getEdgeColor(relArrayCopyNew.get(i).getWeight());
 					mxStylesheet stylesheetEdgeNew = graph.getStylesheet();
 					stylesheetEdgeNew.putCellStyle("updateEdgeStyle", styleEdgeNew);
-					graph.getModel().setStyle(result, "updateEdgeStyle");
+					graph.getModel().setStyle(result, "updateEdgeStyle"); //update the styles for the edges.
 				}
 				
 				evaluated = true;
@@ -295,7 +299,7 @@ public class Actions extends JFrame {
 		        graph.setAllowDanglingEdges(true);
 		        graph.setSplitEnabled(true);
 		        graphComponent.setConnectable(true);
-				Actions newAction = new Actions(argArray,relArray,framework);
+				Actions newAction = new Actions(argArray,relArray,framework); //when user press the restore, current graph closes, a graph with all the default component popup
 				Actions.this.dispose();
 				newAction.setVisible(true);
 				evaluation.setEnabled(true);
@@ -321,7 +325,7 @@ public class Actions extends JFrame {
 		        graph.setSplitEnabled(true);
 		        graphComponent.setConnectable(true);
 				Actions.this.dispose();
-				Import imports = new Import();	
+				Import imports = new Import();	//restart the program from the import window
 				imports.setVisible(true);
 			}
 		});
@@ -354,7 +358,7 @@ public class Actions extends JFrame {
 					
 					if (v1 != null &&v1.length() >0) {
 						String newSummary = selectedArg.getSummary()+"\r\n"+round(Double.parseDouble(v1),2);
-						graph.getModel().setValue(selectedCell, newSummary);
+						graph.getModel().setValue(selectedCell, newSummary);// set the new activation to the selected vertex
 						selectedArg.setActivity(Double.parseDouble(v1));
 					}
 					
@@ -365,7 +369,7 @@ public class Actions extends JFrame {
 						int selectedRelId = selectedCellId-1000+1;
 						Relation selectedRel = Framework.getRel(selectedRelId, relArrayCopy);
 						String newSummary = v2;
-						graph.getModel().setValue(selectedCell, newSummary);
+						graph.getModel().setValue(selectedCell, newSummary);// set the new weight to the selected edge
 						selectedRel.setWeight(Double.parseDouble(v2));
 					}
 										
@@ -393,11 +397,12 @@ public class Actions extends JFrame {
 							textArea.setText(text);
 						}else{
 						String text = "Argument ID: "+tooltipCellId+"\r\n"+tooltipArg.getText();
-						textArea.setText(text);
+						textArea.setText(text); //set the full text of the argument in the textArea
 						}
 						if (evaluated) {
-							ArrayList<Argument> updatedPos = framework.argContribution(tooltipCellId, mode, threshold,argArrayCopy,relArrayCopy);
+							ArrayList<Argument> updatedPos = framework.argContribution(tooltipCellId, mode, threshold,argArrayCopy,relArrayCopy);//get the vertex contribution
 							textContri.setText("Without ArgID: "+tooltipCellId+"\nAct pos1: " + round(updatedPos.get(0).getActivity(),4)+"\nAct pos2: "+round(updatedPos.get(1).getActivity(),4));
+							//set the contribution in the textArea.
 						}
 						
 						
@@ -427,13 +432,17 @@ public class Actions extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				mxCell cell = (mxCell) graphComponent.getCellAt(e.getX(), e.getY());
 				if (cell == null) {
-					changeAT.setEnabled(false);
+					changeAT.setEnabled(false); // some button disable/enable strategies
 				}else{
 					changeAT.setEnabled(true);
 				}
 			}
 		});       
          
+        
+        
+        
+        //some control panel elements initialization
         getContentPane().add(evaluation);
         getContentPane().add(changeAT);
         getContentPane().add(restart);
@@ -513,24 +522,6 @@ public class Actions extends JFrame {
         buttonGroupTh.add(Binary);
         buttonGroupTh.add(None);
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         JLabel lblContribution = new JLabel("Arg Contribution");
         lblContribution.setBounds(1575, 860, 147, 24);
         lblContribution.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -543,8 +534,9 @@ public class Actions extends JFrame {
 	}
 
 	
-
-	public static double round(double value, int places) {
+	//the auxiliary functions
+	
+	public static double round(double value, int places) { //round a double by the input digits 
 	    if (places < 0) throw new IllegalArgumentException();
 
 	    long factor = (long) Math.pow(10, places);
@@ -553,7 +545,7 @@ public class Actions extends JFrame {
 	    return (double) tmp / factor;
 	}
 	
-	public static ArrayList<Argument> copyArgArrayList(ArrayList<Argument> origin) {
+	public static ArrayList<Argument> copyArgArrayList(ArrayList<Argument> origin) {//a full copy to the argument arrayList
 		ArrayList<Argument> copy = new ArrayList<Argument>();
 		for(int i = 0; i<origin.size();i++){
 			Argument temp = new Argument(origin.get(i).getArgId(), origin.get(i).getAgentId(), origin.get(i).getText(), origin.get(i).getSummary(), origin.get(i).getActivity());
@@ -562,7 +554,7 @@ public class Actions extends JFrame {
 		return copy;
 	}
 	
-	public static ArrayList<Relation> copyRelArrayList(ArrayList<Relation> origin) {
+	public static ArrayList<Relation> copyRelArrayList(ArrayList<Relation> origin) {//a full copy to the relation arrayList
 		ArrayList<Relation> copy = new ArrayList<Relation>();
 		for(int i = 0; i<origin.size();i++){
 			Relation temp = new Relation(origin.get(i).getRelId(), origin.get(i).getOriginId(), origin.get(i).getTargetArgId(), origin.get(i).getTargetRelId()

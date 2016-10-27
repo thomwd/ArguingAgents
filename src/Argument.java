@@ -1,8 +1,8 @@
 public class Argument {
 	private  int argId;	
 	private  int agentId;	
-	private  String text;
-	private  String summary;
+	private  String text;// the full text of the argument
+	private  String summary;// the summary of the full text
 	private  double activity;	
 	
 	

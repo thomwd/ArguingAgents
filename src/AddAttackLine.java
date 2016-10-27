@@ -42,30 +42,22 @@ public class AddAttackLine extends Actions {
 			String weight = String.valueOf(relArray.get(i).getWeight());
 			
 				for(int j = 0;j<argArray.size();j++){
-					if (targetArgId != 0) {
-						
-//						
-//						if (argArray.get(j).getArgId() == orginId) {
-//							v1 = getM().get(argArray.get(j).getSummary()+"\r\n"+argArray.get(j).getActivity());
-//						}
-//						if (argArray.get(j).getArgId() == targetArgId) {
-//							v2 = getM().get(argArray.get(j).getSummary()+"\r\n"+argArray.get(j).getActivity());
-//
-//						}
+					if (targetArgId != 0) {//find a edge needs to be drawn
 						
 						if (argArray.get(j).getArgId() == orginId) {
 							v1 = getM().get("ArgId: "+ argArray.get(j).getArgId()+"\r\n"+argArray.get(j).getActivity());
+							//get the original vertex of the relation
 						}
 						if (argArray.get(j).getArgId() == targetArgId) {
 							v2 = getM().get("ArgId: "+argArray.get(j).getArgId()+"\r\n"+argArray.get(j).getActivity());
-
+							//get the end vertex of the relation
 						}
 						
 						
 						
 					    if(v1 !=null && v2 !=null)
 					    {
-					    	if (relArray.get(i).getFlag()) {
+					    	if (relArray.get(i).getFlag()) {//create the edge between v1 and v2
 					    		mxCell cell = (mxCell) getGraph().insertEdge(parent, relId, weight, v1, v2,"lineStyle");
 								break;
 							}else{

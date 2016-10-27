@@ -41,9 +41,9 @@ public class ProcessXML {
 	public static ArrayList<Argument> getArgument(Document document){
 		int argIdIndicator = 1;
 		ArrayList<Argument> argArray= new ArrayList<Argument>();
-	    XPath xpathSelectorForArgument = DocumentHelper.createXPath("//argument[@argId]");
+	    XPath xpathSelectorForArgument = DocumentHelper.createXPath("//argument[@argId]");//use xpath querying for the argument which has argId attribution
 	    List resultsForArgument = xpathSelectorForArgument.selectNodes(document);
-	    for ( Iterator iter = resultsForArgument.iterator(); iter.hasNext(); ) {
+	    for ( Iterator iter = resultsForArgument.iterator(); iter.hasNext(); ) {//construct the Argument object for all query results
 	    	Element element = (Element) iter.next();
 	    	int argId = Integer.parseInt(element.attributeValue("argId"));
 	    	int agentId = Integer.parseInt(element.element("agentId").getText());
@@ -60,14 +60,14 @@ public class ProcessXML {
 	
 	public static ArrayList<Relation> getRelation(Document document){
 		ArrayList<Relation> relArray = new ArrayList<Relation>();
-	    XPath xpathSelectorForArgument = DocumentHelper.createXPath("//argument[@argId]");
+	    XPath xpathSelectorForArgument = DocumentHelper.createXPath("//argument[@argId]");// first search for Arguments, because relation information are embedded in the Argument in the input file
 	    List resultsForArgument = xpathSelectorForArgument.selectNodes(document);
 	    for ( Iterator iter = resultsForArgument.iterator(); iter.hasNext(); ) {    	
 	    	Element element = (Element) iter.next();
 	    	int argId = Integer.parseInt(element.attributeValue("argId"));
-	    	XPath xpathSelectorTargetArg = DocumentHelper.createXPath("//argument[@argId = " +element.attributeValue("argId")+ "]//targetArgId[@weight]");
+	    	XPath xpathSelectorTargetArg = DocumentHelper.createXPath("//argument[@argId = " +element.attributeValue("argId")+ "]//targetArgId[@weight]");// look for the argument targeting to another argument
 		    List resultsTargetArg = xpathSelectorTargetArg.selectNodes(document);
-	    	for(Iterator iterTargetArg = resultsTargetArg.iterator(); iterTargetArg.hasNext(); ){
+	    	for(Iterator iterTargetArg = resultsTargetArg.iterator(); iterTargetArg.hasNext(); ){//construct the Relation object for normal attacking
 	    		Element elementTargetArg = (Element) iterTargetArg.next();
 	    		int relId = Integer.parseInt(elementTargetArg.attributeValue("relId"));
 	    		int originId = argId;
@@ -81,7 +81,7 @@ public class ProcessXML {
 	    	
 	    	XPath xpathSelectorRelArg = DocumentHelper.createXPath("//argument[@argId= "+element.attributeValue("argId")+"]//targetRelId[@weight]");
 		    List resultsRelArg = xpathSelectorRelArg.selectNodes(document);
-	    	for(Iterator iterRelArg = resultsRelArg.iterator(); iterRelArg.hasNext(); ){
+	    	for(Iterator iterRelArg = resultsRelArg.iterator(); iterRelArg.hasNext(); ){//construct the Relation object for the undercutting
 	    		Element elementRelArg = (Element) iterRelArg.next();
 	    		int relId = Integer.parseInt(elementRelArg.attributeValue("relId"));
 	    		int originId = argId;
